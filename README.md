@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Lab Releases vs Hyperscaler Stocks
 
-## Getting Started
+Next.js + TypeScript web app that ingests AI lab release events (official sources first, Google News fallback), overlays them with hyperscaler prices, and runs event-study and lag correlation analyses from 2023 onward.
 
-First, run the development server:
+## Stack
+
+- Next.js App Router (TypeScript)
+- Prisma + SQLite
+- Tailwind CSS
+- Recharts
+- Vitest
+
+## Data Sources
+
+- OpenAI RSS: `https://openai.com/news/rss.xml`
+- Anthropic sitemap/news pages: `https://www.anthropic.com/sitemap.xml`
+- Google AI sitemap/pages: `https://blog.google/en-us/sitemap.xml`
+- Google DeepMind sitemap/pages: `https://deepmind.google/sitemap.xml`
+- Mistral sitemap/pages: `https://mistral.ai/sitemap.xml`
+- Google News RSS fallback for blocked labs/domains
+- Stooq daily prices: `https://stooq.com/q/d/l/?s={symbol}&i=d`
+
+## Quick Start
 
 ```bash
+npm install
+npm run db:init
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## One-Click Backfill
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+From the dashboard, click **Backfill 2023+**, or call:
 
-## Learn More
+```bash
+curl -X POST http://localhost:3000/api/sync/backfill \
+  -H 'content-type: application/json' \
+  -d '{"from":"2023-01-01"}'
+```
 
-To learn more about Next.js, take a look at the following resources:
+Incremental refresh:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+curl -X POST http://localhost:3000/api/sync/incremental
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API Routes
 
-## Deploy on Vercel
+- `POST /api/sync/backfill`
+- `POST /api/sync/incremental`
+- `GET /api/events`
+- `GET /api/prices`
+- `GET /api/analysis/event-study`
+- `GET /api/analysis/correlations`
+- `GET /api/analysis/forward-signals`
+- `GET /api/status`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm test
+```

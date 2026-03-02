@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum SourceAccess {
+  official
+  fallback
+  mixed
+}
+
+enum SourceTier {
+  official
+  fallback
+}
+
+model Lab {
+  id           String              @id
+  name         String
+  sourceAccess SourceAccess        @default(official)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  events       Event[]
+  correlations CorrelationMetric[]
+  sourceStatus SourceStatus[]
+}
+
+model Event {
+  id                   String        @id @default(cuid())
+  labId                String
+  title                String
+  summary              String?
+  url                  String
+  canonicalUrl         String
+  publishedAt          DateTime
+  effectiveTradingDate DateTime?
+  eventType            String
+  confidence           Float
+  sourceTier           SourceTier
+  sourceName           String
+  hash                 String        @unique
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  lab                  Lab           @relation(fields: [labId], references: [id], onDelete: Cascade)
+  impacts              EventImpact[]
+
+  @@unique([labId, canonicalUrl])
+  @@index([publishedAt])
+  @@index([effectiveTradingDate])
+  @@index([confidence])
+  @@index([sourceTier])
+}
+
+model PriceBar {
+  id        String   @id @default(cuid())
+  ticker    String
+  date      DateTime
+  open      Float
+  high      Float
+  low       Float
+  close     Float
+  volume    Float
+  source    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([ticker, date])
+  @@index([date])
+}
+
+model EventImpact {
+  id             String   @id @default(cuid())
+  eventId        String
+  ticker         String
+  window         Int
+  rawReturn      Float
+  abnormalReturn Float
+  car            Float
+  pValue         Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, ticker, window])
+  @@index([ticker])
+  @@index([window])
+}
+
+model CorrelationMetric {
+  id          String   @id @default(cuid())
+  labId       String
+  ticker      String
+  lagDays     Int
+  correlation Float
+  sampleSize  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lab         Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
+
+  @@unique([labId, ticker, lagDays])
+  @@index([ticker])
+  @@index([lagDays])
+}
+
+model SourceStatus {
+  id            String     @id @default(cuid())
+  labId         String
+  sourceName    String
+  sourceTier    SourceTier
+  lastSuccessAt DateTime?
+  lastFailureAt DateTime?
+  lastRunAt     DateTime?
+  lastError     String?
+  etag          String?
+  lastModified  String?
+  eventCount    Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  lab           Lab        @relation(fields: [labId], references: [id], onDelete: Cascade)
+
+  @@unique([labId, sourceName])
+}
+
+model SyncRun {
+  id          String    @id @default(cuid())
+  type        String
+  fromDate    DateTime
+  toDate      DateTime
+  success     Boolean
+  summary     String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+}
