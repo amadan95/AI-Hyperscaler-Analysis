@@ -1,0 +1,256 @@
+.contextGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.chartPanel,
+.timelinePanel {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+  padding: 0.82rem;
+  display: grid;
+  gap: 0.62rem;
+}
+
+.chartLead {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.8rem;
+}
+
+.chartWrap {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.legendRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.legendChip {
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--surface-inset);
+  color: var(--ink-secondary);
+  padding: 0.18rem 0.46rem;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendChipActive {
+  border-color: color-mix(in srgb, var(--signal-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
+}
+
+.legendSwatch {
+  width: 0.72rem;
+  height: 0.14rem;
+  border-radius: 999px;
+}
+
+.focusRow {
+  display: grid;
+  gap: 0.54rem;
+}
+
+.focusField {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.focusLabel {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.focusSelect {
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  background: var(--control-bg);
+  color: var(--ink-primary);
+  font-size: 0.84rem;
+  padding: 0.42rem 0.48rem;
+}
+
+.focusSelect:focus-visible {
+  outline: 2px solid var(--line-focus);
+  outline-offset: 2px;
+}
+
+.compositionGrid {
+  display: grid;
+  gap: 0.58rem;
+}
+
+.compositionTile {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  padding: 0.56rem;
+  display: grid;
+  gap: 0.16rem;
+}
+
+.compositionLabel {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.67rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.compositionValue {
+  margin: 0;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: 1.14rem;
+  line-height: 1;
+}
+
+.compositionNote {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.76rem;
+}
+
+.narrativeCallout {
+  border: 1px solid color-mix(in srgb, var(--signal-accent) 30%, var(--line-soft) 70%);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--signal-accent) 10%, var(--surface-inset) 90%);
+  padding: 0.64rem;
+  color: var(--ink-primary);
+  font-size: 0.8rem;
+}
+
+.timelineControlRow {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.timelineWindowButtons {
+  display: flex;
+  gap: 0.34rem;
+}
+
+.windowButton {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--ink-secondary);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.26rem 0.45rem;
+}
+
+.windowButton:focus-visible {
+  outline: 2px solid var(--line-focus);
+  outline-offset: 2px;
+}
+
+.windowButtonActive {
+  border-color: color-mix(in srgb, var(--signal-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
+}
+
+.timelineGroups {
+  display: grid;
+  gap: 0.56rem;
+}
+
+.timelineGroup {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  overflow: hidden;
+}
+
+.timelineGroupTitle {
+  margin: 0;
+  padding: 0.46rem 0.56rem;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-tertiary);
+  font-weight: 700;
+}
+
+.timelineList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+}
+
+.timelineEvent {
+  display: grid;
+  gap: 0.16rem;
+  padding: 0.46rem 0.56rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.timelineEvent:last-child {
+  border-bottom: none;
+}
+
+.timelineEventMeta {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.67rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.timelineEventTitle {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-primary);
+}
+
+.timelineLink {
+  color: color-mix(in srgb, var(--signal-accent) 82%, var(--ink-primary) 18%);
+  text-decoration: underline;
+  text-underline-offset: 0.12rem;
+}
+
+.timelineEmpty {
+  margin: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--ink-secondary);
+  padding: 0.62rem;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 860px) {
+  .focusRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .compositionGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1140px) {
+  .contextGrid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+    align-items: start;
+  }
+}

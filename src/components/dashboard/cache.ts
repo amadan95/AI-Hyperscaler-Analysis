@@ -23,6 +23,10 @@ export function cacheKey(resource: string, filters: AppliedFilters): string {
   return `${resource}:${serializeFilters(filters)}`;
 }
 
+export function scopedCacheKey(resource: string, filters: AppliedFilters, scope: string): string {
+  return `${scope}:${cacheKey(resource, filters)}`;
+}
+
 export function readCache<T>(key: string): T | null {
   const cached = cache.get(key);
   if (!cached) return null;

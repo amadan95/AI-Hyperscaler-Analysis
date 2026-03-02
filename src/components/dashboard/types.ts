@@ -141,7 +141,25 @@ export type ForwardSignalsResponse = {
 };
 
 export type Theme = "light" | "dark";
-export type DashboardView = "overview" | "signals" | "diagnostics";
+export type DashboardRoute = "signals" | "context" | "diagnostics";
+export type DashboardView = DashboardRoute;
+export type PanelKey =
+  | "hero"
+  | "ranked"
+  | "tape"
+  | "timeline"
+  | "event-study"
+  | "correlation"
+  | "quality"
+  | "events";
+export type FocusWindow = "1d" | "1w" | "1m";
+
+export type FocusState = {
+  focusLab?: string;
+  focusTicker?: string;
+  window?: FocusWindow;
+};
+
 export type SourceTierFilter = "all" | "official" | "fallback";
 export type DensityMode = "compact" | "cozy";
 
@@ -168,8 +186,9 @@ export type AppliedFilters = {
 
 export type DraftFilters = AppliedFilters;
 
-export type QueryControls = {
-  view: DashboardView;
+export type QueryControls = FocusState & {
+  route: DashboardRoute;
+  panel?: PanelKey;
   sort: DashboardSort;
   page: number;
   density: DensityMode;

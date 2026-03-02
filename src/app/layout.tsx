@@ -1,9 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -20,8 +25,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f3f6fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#091223" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f2e7" },
+    { media: "(prefers-color-scheme: dark)", color: "#081630" },
   ],
 };
 
@@ -32,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} antialiased`}>
+      <body className={`${fraunces.variable} ${manrope.variable} ${ibmPlexMono.variable} antialiased`}>
         {children}
       </body>
     </html>

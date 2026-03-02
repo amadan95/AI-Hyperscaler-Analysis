@@ -1,8 +1,30 @@
 "use client";
 
-import styles from "@/components/dashboard/dashboard.module.css";
-import type { DashboardSort, DensityMode, ForwardSignalsResponse, LoadState } from "@/components/dashboard/types";
-import { confidenceBadgeClass, paginate, priorityBadgeClass, sortForwardSignals } from "@/components/dashboard/utils";
+import shared from "@/components/dashboard/dashboard.module.css";
+import styles from "@/components/dashboard/signals-view.module.css";
+import { GlossaryInline } from "@/components/dashboard/glossary-inline";
+import { HeroOpportunity } from "@/components/dashboard/hero-opportunity";
+import { RegimeStrip } from "@/components/dashboard/regime-strip";
+import type {
+  DashboardSort,
+  DensityMode,
+  ForwardSignalsResponse,
+  LoadState,
+  PanelKey,
+  StatusResponse,
+} from "@/components/dashboard/types";
+import {
+  confidenceBadgeClass,
+  paginate,
+  priorityBadgeClass,
+  sortForwardSignals,
+  topOpportunity,
+} from "@/components/dashboard/utils";
+
+type OpportunityDelta = {
+  edgeDeltaPct: number;
+  confidenceDelta: number;
+};
 
 type SignalsViewProps = {
   sort: DashboardSort;
@@ -11,147 +33,176 @@ type SignalsViewProps = {
   onPageChange: (page: number) => void;
   displayTicker: (ticker: string) => string;
   forwardState: LoadState<ForwardSignalsResponse>;
+  statusState: LoadState<StatusResponse>;
+  opportunityDelta: OpportunityDelta | undefined;
   onRetryForward: () => void;
+  onRetryStatus: () => void;
+  onSetPanel: (panel: PanelKey) => void;
 };
 
-export function SignalsView({ sort, density, page, onPageChange, displayTicker, forwardState, onRetryForward }: SignalsViewProps) {
+export function SignalsView({
+  sort,
+  density,
+  page,
+  onPageChange,
+  displayTicker,
+  forwardState,
+  statusState,
+  opportunityDelta,
+  onRetryForward,
+  onRetryStatus,
+  onSetPanel,
+}: SignalsViewProps) {
   const forward = forwardState.data;
   const signals = sortForwardSignals(forward?.topSignals ?? [], sort);
   const pageSize = density === "compact" ? 14 : 10;
   const { pageItems, currentPage, totalPages } = paginate(signals, page, pageSize);
+  const leadSignal = topOpportunity(forward?.topSignals ?? []);
 
   return (
     <>
-      <nav className={styles.sectionNav} aria-label="Signals sections">
-        <a className={styles.sectionLink} href="#signals-ranked">Ranked Signals</a>
-        <a className={styles.sectionLink} href="#signals-pairs">Pair Ideas</a>
-        <a className={styles.sectionLink} href="#signals-insights">Insights and Actions</a>
+      <nav className={shared.sectionNav} aria-label="Signals sections">
+        <a className={shared.sectionLink} href="#signals-hero" onClick={() => onSetPanel("hero")}>Top Opportunity</a>
+        <a className={shared.sectionLink} href="#signals-ranked" onClick={() => onSetPanel("ranked")}>Ranked Opportunities</a>
+        <a className={shared.sectionLink} href="#signals-glossary" onClick={() => onSetPanel("quality")}>Glossary</a>
       </nav>
 
-      <section id="signals-ranked" className={styles.panel}>
-        <div className={styles.panelHeader}>
-          <div>
-            <h2 className={styles.title}>Forward Signals</h2>
-            <p className={styles.subtitle}>CAR means cumulative abnormal return. Sig Rate captures how often post-release reactions were statistically significant.</p>
-          </div>
-          <p className={styles.smallHelp}>Model horizon: {forward?.signalWindowDays ?? 7} days</p>
-        </div>
+      <section id="signals-hero" className={`${shared.anchorTarget} ${styles.heroGrid} ${shared.reveal}`}>
+        <HeroOpportunity signal={leadSignal} delta={opportunityDelta} displayTicker={displayTicker} asOf={forward?.asOf} />
 
-        {forwardState.error && (
-          <div className={styles.alert} role="alert">
-            {forwardState.error}
-            <div className={styles.actionRow}>
-              <button type="button" className={`${styles.button} ${styles.buttonQuiet}`} onClick={onRetryForward}>Retry Signals</button>
+        <aside className={styles.sideCard}>
+          <h2 className={styles.sideTitle}>Immediate Next Action</h2>
+          {(forward?.nextBestActions ?? []).length === 0 ? (
+            <p className={styles.sideHelp}>No next actions available. Lower confidence threshold or widen date range to regenerate guidance.</p>
+          ) : (
+            <>
+              <p className={styles.sideHeadline}>{forward?.nextBestActions[0]?.action}</p>
+              <p className={styles.sideMeta}>{forward?.nextBestActions[0]?.rationale}</p>
+              <p className={styles.sideMeta}>Horizon: {forward?.nextBestActions[0]?.horizon}</p>
+            </>
+          )}
+        </aside>
+      </section>
+
+      <RegimeStrip forward={forward} status={statusState.data} />
+
+      <section id="signals-ranked" className={`${shared.anchorTarget} ${styles.bodyGrid} ${shared.revealDelayed}`}>
+        <article className={shared.panel}>
+          <div className={shared.panelHeader}>
+            <div>
+              <h2 className={shared.title}>Ranked Opportunities</h2>
+              <p className={shared.subtitle}>CAR: cumulative abnormal return. Sig Rate: share of significant post-release outcomes.</p>
             </div>
+            <p className={shared.smallHelp}>Model horizon: {forward?.signalWindowDays ?? 7} days</p>
           </div>
-        )}
 
-        <div className={`${styles.tableWrap} ${density === "compact" ? styles.densityCompact : styles.densityCozy}`}>
-          <table className={styles.table}>
-            <caption className="sr-only">Forward signals table</caption>
-            <thead className={styles.tableHead}>
-              <tr>
-                <th scope="col">Lab</th>
-                <th scope="col">Ticker</th>
-                <th scope="col">Bias</th>
-                <th scope="col">Avg CAR</th>
-                <th scope="col">Sig Rate</th>
-                <th scope="col">Best Lag</th>
-                <th scope="col">Confidence</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageItems.length === 0 ? (
+          {forwardState.error && (
+            <div className={shared.alert} role="alert">
+              {forwardState.error}
+              <div className={shared.actionRow}>
+                <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryForward}>Retry Opportunities</button>
+              </div>
+            </div>
+          )}
+
+          <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
+            <table className={shared.table}>
+              <caption className="sr-only">Ranked opportunities table</caption>
+              <thead className={shared.tableHead}>
                 <tr>
-                  <td colSpan={7}><p className={styles.empty}>No signal rows match this filter set. Lower confidence threshold or expand dates.</p></td>
+                  <th scope="col">Lab</th>
+                  <th scope="col">Ticker</th>
+                  <th scope="col">Bias</th>
+                  <th scope="col">Avg CAR</th>
+                  <th scope="col">Sig Rate</th>
+                  <th scope="col">Best Lag</th>
+                  <th scope="col">Confidence</th>
                 </tr>
-              ) : (
-                pageItems.map((signal) => (
-                  <tr key={`${signal.labId}-${signal.ticker}`}>
-                    <th scope="row">{signal.labName}</th>
-                    <td>{displayTicker(signal.ticker)}</td>
-                    <td className={signal.direction === "long-bias" ? "tone-positive" : "tone-negative"}>{signal.direction === "long-bias" ? "Long" : "Short"}</td>
-                    <td className={styles.mono}>{signal.avgCarPct.toFixed(2)}%</td>
-                    <td className={styles.mono}>{signal.sigRatePct.toFixed(1)}%</td>
-                    <td className={styles.mono}>{signal.bestLagDays}d ({signal.bestLagCorrelation.toFixed(2)})</td>
-                    <td><span className={`badge ${confidenceBadgeClass(signal.confidenceBand)}`}>{(signal.confidenceScore * 100).toFixed(0)}</span></td>
+              </thead>
+              <tbody>
+                {pageItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={7}><p className={shared.empty}>No ranked opportunities for these filters. Lower confidence, expand dates, or include more labs.</p></td>
                   </tr>
+                ) : (
+                  pageItems.map((signal) => (
+                    <tr key={`${signal.labId}-${signal.ticker}`}>
+                      <th scope="row">{signal.labName}</th>
+                      <td>{displayTicker(signal.ticker)}</td>
+                      <td className={signal.direction === "long-bias" ? "tone-positive" : "tone-negative"}>{signal.direction === "long-bias" ? "Long" : "Short"}</td>
+                      <td className={shared.mono}>{signal.avgCarPct.toFixed(2)}%</td>
+                      <td className={shared.mono}>{signal.sigRatePct.toFixed(1)}%</td>
+                      <td className={shared.mono}>{signal.bestLagDays}d ({signal.bestLagCorrelation.toFixed(2)})</td>
+                      <td><span className={`badge ${confidenceBadgeClass(signal.confidenceBand)}`}>{(signal.confidenceScore * 100).toFixed(0)}</span></td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className={shared.pagination}>
+            <button type="button" className={shared.pageButton} onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>Previous</button>
+            <p className={shared.pageInfo}>Page {currentPage} of {totalPages}</p>
+            <button type="button" className={shared.pageButton} onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Next</button>
+          </div>
+        </article>
+
+        <aside className={styles.sideRail}>
+          <article className={styles.sideCard}>
+            <h2 className={styles.sideTitle}>Relative-Value Setups</h2>
+            <p className={styles.sideHelp}>Pair structures synthesized from strongest positive and negative reactions.</p>
+            <ul className={styles.sideList}>
+              {(forward?.pairIdeas ?? []).length === 0 ? (
+                <li className={styles.sideItem}>
+                  <p className={styles.sideMeta}>No pair setups met the current threshold. Lower confidence or expand filters.</p>
+                </li>
+              ) : (
+                (forward?.pairIdeas ?? []).slice(0, 5).map((idea) => (
+                  <li className={styles.sideItem} key={`${idea.labId}-${idea.longTicker}-${idea.shortTicker}`}>
+                    <p className={styles.sideLabel}>{idea.labName}</p>
+                    <p className={styles.sideHeadline}>Long {displayTicker(idea.longTicker)} / Short {displayTicker(idea.shortTicker)}</p>
+                    <p className={styles.sideMeta}>{idea.thesis}</p>
+                    <p className={styles.sideMeta}>Expected spread {idea.expectedSpreadPct.toFixed(2)}%</p>
+                    <span className={`badge ${confidenceBadgeClass(idea.confidenceBand)}`}>{(idea.confidenceScore * 100).toFixed(0)}</span>
+                  </li>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
+            </ul>
+          </article>
 
-        <div className={styles.pagination}>
-          <button type="button" className={styles.pageButton} onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>Previous</button>
-          <p className={styles.pageInfo}>Page {currentPage} of {totalPages}</p>
-          <button type="button" className={styles.pageButton} onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Next</button>
-        </div>
-      </section>
+          <article className={styles.sideCard}>
+            <h2 className={styles.sideTitle}>Next-Best Actions</h2>
+            <p className={styles.sideHelp}>Execution queue ordered by confidence and urgency.</p>
+            <ul className={styles.sideList}>
+              {(forward?.nextBestActions ?? []).length === 0 ? (
+                <li className={styles.sideItem}>
+                  <p className={styles.sideMeta}>No actions generated. Adjust filters and refresh to recover action guidance.</p>
+                </li>
+              ) : (
+                (forward?.nextBestActions ?? []).slice(0, 5).map((action) => (
+                  <li className={styles.sideItem} key={action.id}>
+                    <p className={styles.sideLabel}>Horizon {action.horizon}</p>
+                    <p className={styles.sideHeadline}>{action.action}</p>
+                    <p className={styles.sideMeta}>{action.rationale}</p>
+                    <span className={`badge ${priorityBadgeClass(action.priority)}`}>{action.priority}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </article>
 
-      <section id="signals-pairs" className={styles.panel}>
-        <div className={styles.panelHeader}>
-          <div>
-            <h2 className={styles.title}>Pair Ideas</h2>
-            <p className={styles.subtitle}>Relative-value candidates from strongest positive and negative post-release reactions.</p>
-          </div>
-        </div>
-
-        <div className={styles.grid2}>
-          {(forward?.pairIdeas ?? []).length === 0 ? (
-            <p className={styles.empty}>No pair ideas met current thresholds. Lower confidence or widen the date range.</p>
-          ) : (
-            (forward?.pairIdeas ?? []).map((idea) => (
-              <article key={`${idea.labId}-${idea.longTicker}-${idea.shortTicker}`} className={styles.metricCard}>
-                <p className={styles.metricLabel}>{idea.labName}</p>
-                <p className={styles.metricValue}>Long {displayTicker(idea.longTicker)} / Short {displayTicker(idea.shortTicker)}</p>
-                <p className={styles.metricNote}>{idea.thesis}</p>
-                <p className={`${styles.metricNote} ${styles.mono}`}>Expected spread: {idea.expectedSpreadPct.toFixed(2)}%</p>
-                <span className={`badge ${confidenceBadgeClass(idea.confidenceBand)}`}>{(idea.confidenceScore * 100).toFixed(0)}</span>
-              </article>
-            ))
+          {statusState.error && (
+            <article className={styles.sideCard}>
+              <h2 className={styles.sideTitle}>Source Reliability Recovery</h2>
+              <p className={styles.sideHelp}>{statusState.error}</p>
+              <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryStatus}>Retry Source Reliability</button>
+            </article>
           )}
-        </div>
+        </aside>
       </section>
 
-      <section id="signals-insights" className={styles.grid2}>
-        <article className={styles.panel}>
-          <h2 className={styles.title}>Trending Insights</h2>
-          <p className={styles.subtitle}>Generated from current regime and strongest lab/ticker relationships.</p>
-          <div className={styles.grid2}>
-            {(forward?.trendingInsights ?? []).length === 0 ? (
-              <p className={styles.empty}>No insights available for these filters.</p>
-            ) : (
-              (forward?.trendingInsights ?? []).map((insight) => (
-                <article className={styles.metricCard} key={insight.id}>
-                  <p className={styles.metricLabel}>{insight.importance}</p>
-                  <p className={styles.metricValue}>{insight.headline}</p>
-                  <p className={styles.metricNote}>{insight.detail}</p>
-                </article>
-              ))
-            )}
-          </div>
-        </article>
-
-        <article className={styles.panel}>
-          <h2 className={styles.title}>Next Best Actions</h2>
-          <p className={styles.subtitle}>Action-oriented suggestions based on confidence and signal regime.</p>
-          <div className={styles.grid2}>
-            {(forward?.nextBestActions ?? []).length === 0 ? (
-              <p className={styles.empty}>No actions generated for these filters.</p>
-            ) : (
-              (forward?.nextBestActions ?? []).map((action) => (
-                <article className={styles.metricCard} key={action.id}>
-                  <p className={styles.metricLabel}>Horizon: {action.horizon}</p>
-                  <p className={styles.metricValue}>{action.action}</p>
-                  <p className={styles.metricNote}>{action.rationale}</p>
-                  <span className={`badge ${priorityBadgeClass(action.priority)}`}>{action.priority}</span>
-                </article>
-              ))
-            )}
-          </div>
-        </article>
-      </section>
+      <GlossaryInline />
     </>
   );
 }

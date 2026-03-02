@@ -2,13 +2,17 @@ import { DEFAULT_FROM_DATE, HYPERSCALER_TICKERS, LABS } from "@/lib/config";
 import type {
   AppliedFilters,
   CorrelationMetric,
+  DashboardRoute,
   DashboardSort,
   DashboardView,
   DensityMode,
   DraftFilters,
   EventApi,
   EventStudyImpact,
+  FocusWindow,
   ForwardSignal,
+  ForwardSignalsResponse,
+  PanelKey,
   QueryControls,
   SourceTierFilter,
 } from "@/components/dashboard/types";
@@ -20,22 +24,16 @@ export const SOURCE_TIER_OPTIONS = [
 ] as const;
 
 const SOURCE_TIER_VALUES = SOURCE_TIER_OPTIONS.map((option) => option.value);
+const VALID_PANELS: PanelKey[] = ["hero", "ranked", "tape", "timeline", "event-study", "correlation", "quality", "events"];
+const VALID_WINDOWS: FocusWindow[] = ["1d", "1w", "1m"];
 
 export const VIEW_PATHS: Record<DashboardView, string> = {
-  overview: "/",
-  signals: "/signals",
+  signals: "/",
+  context: "/context",
   diagnostics: "/diagnostics",
 };
 
 export const SORT_OPTIONS: Record<DashboardView, Array<{ value: DashboardSort; label: string }>> = {
-  overview: [
-    { value: "confidence-desc", label: "Confidence: High to Low" },
-    { value: "confidence-asc", label: "Confidence: Low to High" },
-    { value: "car-desc", label: "Avg CAR: High to Low" },
-    { value: "car-asc", label: "Avg CAR: Low to High" },
-    { value: "sig-rate-desc", label: "Signal Rate: High to Low" },
-    { value: "sig-rate-asc", label: "Signal Rate: Low to High" },
-  ],
   signals: [
     { value: "confidence-desc", label: "Confidence: High to Low" },
     { value: "confidence-asc", label: "Confidence: Low to High" },
@@ -44,13 +42,19 @@ export const SORT_OPTIONS: Record<DashboardView, Array<{ value: DashboardSort; l
     { value: "sig-rate-desc", label: "Signal Rate: High to Low" },
     { value: "sig-rate-asc", label: "Signal Rate: Low to High" },
   ],
+  context: [
+    { value: "date-desc", label: "Catalysts: Newest First" },
+    { value: "date-asc", label: "Catalysts: Oldest First" },
+    { value: "confidence-desc", label: "Confidence: High to Low" },
+    { value: "confidence-asc", label: "Confidence: Low to High" },
+  ],
   diagnostics: [
-    { value: "date-desc", label: "Event Date: Newest First" },
-    { value: "date-asc", label: "Event Date: Oldest First" },
-    { value: "pvalue-asc", label: "P-value: Lowest First" },
-    { value: "pvalue-desc", label: "P-value: Highest First" },
     { value: "car-desc", label: "CAR: High to Low" },
     { value: "car-asc", label: "CAR: Low to High" },
+    { value: "pvalue-asc", label: "P-value: Lowest First" },
+    { value: "pvalue-desc", label: "P-value: Highest First" },
+    { value: "date-desc", label: "Event Date: Newest First" },
+    { value: "date-asc", label: "Event Date: Oldest First" },
   ],
 };
 
@@ -67,16 +71,30 @@ export const DEFAULT_FILTERS: AppliedFilters = {
   sourceTier: "all",
 };
 
-export function defaultSortForView(view: DashboardView): DashboardSort {
-  return view === "diagnostics" ? "date-desc" : "confidence-desc";
+export function defaultPanelForRoute(route: DashboardRoute): PanelKey {
+  if (route === "signals") return "hero";
+  if (route === "context") return "tape";
+  return "event-study";
 }
 
-export function defaultQueryControls(view: DashboardView): QueryControls {
+export function defaultWindowForRoute(route: DashboardRoute): FocusWindow {
+  return route === "diagnostics" ? "1w" : "1w";
+}
+
+export function defaultSortForView(view: DashboardView): DashboardSort {
+  if (view === "diagnostics") return "car-desc";
+  if (view === "context") return "date-desc";
+  return "confidence-desc";
+}
+
+export function defaultQueryControls(route: DashboardRoute): QueryControls {
   return {
-    view,
-    sort: defaultSortForView(view),
+    route,
+    panel: defaultPanelForRoute(route),
+    sort: defaultSortForView(route),
     page: 1,
     density: DEFAULT_DENSITY,
+    window: defaultWindowForRoute(route),
   };
 }
 
@@ -93,6 +111,23 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
+function parseRoute(value: string | null, fallback: DashboardRoute): DashboardRoute {
+  if (value === "signals" || value === "context" || value === "diagnostics") {
+    return value;
+  }
+  return fallback;
+}
+
+function parsePanel(value: string | null, fallback: PanelKey): PanelKey {
+  if (!value) return fallback;
+  return VALID_PANELS.includes(value as PanelKey) ? (value as PanelKey) : fallback;
+}
+
+function parseWindow(value: string | null, fallback: FocusWindow): FocusWindow {
+  if (!value) return fallback;
+  return VALID_WINDOWS.includes(value as FocusWindow) ? (value as FocusWindow) : fallback;
+}
+
 function parseSourceTier(value: string | null): SourceTierFilter {
   if (!value) return DEFAULT_FILTERS.sourceTier;
   if (SOURCE_TIER_VALUES.includes(value as SourceTierFilter)) {
@@ -106,6 +141,11 @@ function parseSelection(value: string | null, allowed: string[], fallback: strin
   const allowedSet = new Set(allowed);
   const parsed = Array.from(new Set(value.split(",").map((item) => item.trim()).filter((item) => allowedSet.has(item))));
   return parsed.length > 0 ? parsed : [...fallback];
+}
+
+function parseOptionalSelection(value: string | null, allowed: string[]): string | undefined {
+  if (!value) return undefined;
+  return allowed.includes(value) ? value : undefined;
 }
 
 function parseSort(value: string | null, view: DashboardView): DashboardSort {
@@ -134,8 +174,9 @@ function parseMinConfidence(value: string | null): number {
   return clamp(parsed, 0.4, 1);
 }
 
-export function parseUrlState(search: string, routeView: DashboardView): { filters: AppliedFilters; controls: QueryControls } {
+export function parseUrlState(search: string, routeView: DashboardRoute): { filters: AppliedFilters; controls: QueryControls } {
   const params = new URLSearchParams(search);
+  const route = parseRoute(params.get("route") ?? params.get("view"), routeView);
   const filters: AppliedFilters = {
     from: parseDateInput(params.get("from"), DEFAULT_FILTERS.from),
     to: parseDateInput(params.get("to"), DEFAULT_FILTERS.to),
@@ -146,10 +187,14 @@ export function parseUrlState(search: string, routeView: DashboardView): { filte
   };
 
   const controls: QueryControls = {
-    view: routeView,
-    sort: parseSort(params.get("sort"), routeView),
+    route,
+    panel: parsePanel(params.get("panel"), defaultPanelForRoute(routeView)),
+    sort: parseSort(params.get("sort"), route),
     page: parsePage(params.get("page")),
     density: parseDensity(params.get("density")),
+    focusLab: parseOptionalSelection(params.get("focusLab"), LABS.map((lab) => lab.id)),
+    focusTicker: parseOptionalSelection(params.get("focusTicker"), HYPERSCALER_TICKERS.map((ticker) => ticker.ticker)),
+    window: parseWindow(params.get("window"), defaultWindowForRoute(routeView)),
   };
 
   return { filters, controls };
@@ -157,7 +202,7 @@ export function parseUrlState(search: string, routeView: DashboardView): { filte
 
 export function buildSearchParams(filters: AppliedFilters, controls: QueryControls): URLSearchParams {
   const params = new URLSearchParams();
-  params.set("view", controls.view);
+  params.set("route", controls.route);
   params.set("from", filters.from);
   params.set("to", filters.to);
   params.set("labs", filters.labs.join(","));
@@ -167,18 +212,28 @@ export function buildSearchParams(filters: AppliedFilters, controls: QueryContro
   params.set("sort", controls.sort);
   params.set("page", String(controls.page));
   params.set("density", controls.density);
+
+  if (controls.panel) params.set("panel", controls.panel);
+  if (controls.focusLab) params.set("focusLab", controls.focusLab);
+  if (controls.focusTicker) params.set("focusTicker", controls.focusTicker);
+  if (controls.window) params.set("window", controls.window);
+
   return params;
 }
 
-export function createViewHref(view: DashboardView, filters: AppliedFilters, controls: QueryControls): string {
-  const nextControls = {
+export function createViewHref(route: DashboardRoute, filters: AppliedFilters, controls: QueryControls): string {
+  const nextControls: QueryControls = {
     ...controls,
-    view,
-    sort: defaultSortForView(view),
+    route,
+    panel: defaultPanelForRoute(route),
+    sort: defaultSortForView(route),
     page: 1,
+    focusLab: controls.focusLab,
+    focusTicker: controls.focusTicker,
+    window: controls.window,
   };
   const params = buildSearchParams(filters, nextControls);
-  return `${VIEW_PATHS[view]}?${params.toString()}`;
+  return `${VIEW_PATHS[route]}?${params.toString()}`;
 }
 
 export function areFiltersEqual(a: DraftFilters, b: AppliedFilters): boolean {
@@ -315,6 +370,95 @@ export function summarizeChart(points: Array<Record<string, number | string>>, t
   const leader = summaries[0];
   const laggard = summaries[summaries.length - 1];
   return `Best relative trend: ${leader.ticker} ${leader.deltaPct.toFixed(2)}%. Weakest relative trend: ${laggard.ticker} ${laggard.deltaPct.toFixed(2)}%.`;
+}
+
+export function topOpportunity(signals: ForwardSignal[]): ForwardSignal | undefined {
+  if (signals.length === 0) return undefined;
+  return [...signals]
+    .sort((left, right) => {
+      const leftScore = opportunityCompositeScore(left);
+      const rightScore = opportunityCompositeScore(right);
+      return rightScore - leftScore;
+    })
+    .at(0);
+}
+
+function opportunityCompositeScore(signal: ForwardSignal): number {
+  const carTerm = clamp(signal.avgCar, -0.12, 0.12);
+  const actionableTerm = signal.actionable ? 0.05 : 0;
+  return signal.confidenceScore * 0.6 + signal.sigRate * 0.3 + carTerm * 0.1 + actionableTerm;
+}
+
+export type RegimeSummary = {
+  label: string;
+  note: string;
+  tone: "high" | "medium" | "low";
+};
+
+export function classifyRegime(forward: ForwardSignalsResponse | undefined): RegimeSummary {
+  const regime = forward?.regime;
+  if (!regime) {
+    return {
+      label: "Regime Unavailable",
+      note: "Run a refresh to load event-burst diagnostics.",
+      tone: "low",
+    };
+  }
+
+  const ratio = regime.burstRatio;
+  if (ratio >= 0.5) {
+    return {
+      label: "Event Surge",
+      note: `${(ratio * 100).toFixed(0)}% of event days are multi-lab bursts. Prioritize fast follow-through setups.`,
+      tone: "high",
+    };
+  }
+
+  if (ratio >= 0.25) {
+    return {
+      label: "Active Pulse",
+      note: `${(ratio * 100).toFixed(0)}% burst ratio with recurring catalysts. Keep risk-sized directional ideas active.`,
+      tone: "medium",
+    };
+  }
+
+  return {
+    label: "Sparse Cycle",
+    note: `${(ratio * 100).toFixed(0)}% burst ratio. Favor selective and high-conviction entries only.`,
+    tone: "low",
+  };
+}
+
+export type OpportunityDelta = {
+  edgeDeltaPct: number;
+  confidenceDelta: number;
+};
+
+export function computeOpportunityDelta(current: ForwardSignal | undefined, previous: ForwardSignal | undefined): OpportunityDelta | undefined {
+  if (!current || !previous) return undefined;
+  return {
+    edgeDeltaPct: current.avgCarPct - previous.avgCarPct,
+    confidenceDelta: current.confidenceScore - previous.confidenceScore,
+  };
+}
+
+export function composeWhyNowNarrative(forward: ForwardSignalsResponse | undefined, filters: AppliedFilters, focusLab?: string, focusTicker?: string): string {
+  const top = topOpportunity(forward?.topSignals ?? []);
+  const regime = classifyRegime(forward);
+  const labLabel = focusLab ? LABS.find((lab) => lab.id === focusLab)?.name : undefined;
+  const tickerLabel = focusTicker ?? undefined;
+
+  const scope = [
+    `Window ${filters.from} to ${filters.to}`,
+    labLabel ? `focus lab ${labLabel}` : `${filters.labs.length} labs in scope`,
+    tickerLabel ? `focus ticker ${tickerLabel}` : `${filters.tickers.length} tickers in scope`,
+  ].join("; ");
+
+  if (!top) {
+    return `${scope}. ${regime.label}: ${regime.note}`;
+  }
+
+  return `${scope}. ${regime.label}: ${regime.note} Current leading setup is ${top.labName} vs ${top.ticker} (${(top.confidenceScore * 100).toFixed(0)} confidence, ${top.avgCarPct.toFixed(2)}% avg CAR).`;
 }
 
 export function readableError(error: unknown, fallback: string): string {

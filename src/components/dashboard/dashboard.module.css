@@ -1,25 +1,22 @@
 .root {
   min-height: 100vh;
-  background:
-    radial-gradient(58rem 32rem at 7% -2%, color-mix(in srgb, var(--signal-accent) 10%, transparent) 0%, transparent 70%),
-    radial-gradient(40rem 26rem at 92% -5%, color-mix(in srgb, var(--signal-warning) 8%, transparent) 0%, transparent 72%),
-    linear-gradient(175deg, color-mix(in srgb, var(--desk-backdrop) 88%, #ffffff 12%), var(--desk-canvas));
   color: var(--ink-primary);
+  background: var(--desk-canvas);
 }
 
 .skipLink {
   position: absolute;
   top: 0.75rem;
   left: 1rem;
-  z-index: 200;
+  z-index: 400;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong);
   background: var(--surface-raised);
   color: var(--ink-primary);
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.7rem;
   text-decoration: none;
   transform: translateY(-180%);
-  transition: transform 160ms ease;
+  transition: transform 120ms ease;
 }
 
 .skipLink:focus-visible {
@@ -28,23 +25,22 @@
 
 .app {
   margin: 0 auto;
-  max-width: 1520px;
+  max-width: 1360px;
   padding: 1rem;
   display: grid;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .commandBar {
   position: sticky;
-  top: 0.75rem;
-  z-index: 50;
+  top: 0.5rem;
+  z-index: 120;
   border: 1px solid var(--line-default);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
-  backdrop-filter: blur(10px);
-  padding: 0.9rem;
+  background: var(--surface-raised);
+  padding: 0.85rem;
   display: grid;
-  gap: 0.8rem;
+  gap: 0.75rem;
 }
 
 .commandHeader {
@@ -52,71 +48,76 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.75rem;
+  align-items: start;
 }
 
 .commandTitle {
   margin: 0;
-  font-size: 1.1rem;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.15;
   letter-spacing: -0.01em;
 }
 
 .commandSubtext {
-  margin: 0.2rem 0 0;
+  margin: 0.3rem 0 0;
   color: var(--ink-secondary);
   font-size: 0.83rem;
+  max-width: 68ch;
 }
 
 .commandMeta {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-.unsaved {
+.unsaved,
+.status {
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--signal-warning) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 18%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 80%, var(--ink-primary) 20%);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   font-weight: 700;
-  padding: 0.2rem 0.52rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid transparent;
+}
+
+.unsaved {
+  border-color: color-mix(in srgb, var(--signal-warning) 45%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 76%, var(--ink-primary) 24%);
 }
 
 .status {
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--signal-positive) 46%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 16%, transparent);
+  border-color: color-mix(in srgb, var(--signal-positive) 45%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
   color: color-mix(in srgb, var(--signal-positive) 76%, var(--ink-primary) 24%);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-weight: 700;
-  padding: 0.2rem 0.52rem;
 }
 
 .statusBusy {
-  border-color: color-mix(in srgb, var(--signal-warning) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 18%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 80%, var(--ink-primary) 20%);
+  border-color: color-mix(in srgb, var(--signal-warning) 45%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 76%, var(--ink-primary) 24%);
 }
 
 .controlGrid {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.62rem;
 }
 
 .field {
   display: grid;
-  gap: 0.3rem;
+  gap: 0.28rem;
+  align-content: start;
 }
 
 .fieldLabel {
   color: var(--ink-tertiary);
-  font-size: 0.7rem;
-  letter-spacing: 0.07em;
+  font-size: 0.67rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 700;
 }
@@ -127,42 +128,51 @@
 .segmentedButton,
 .chip,
 .button,
-.linkButton,
-.pageButton {
+.pageButton,
+.navLink,
+.sectionLink {
   touch-action: manipulation;
   -webkit-tap-highlight-color: color-mix(in srgb, var(--signal-accent) 25%, transparent);
 }
 
 .input,
 .select {
+  width: 100%;
   border: 1px solid var(--control-border);
   border-radius: var(--radius-sm);
   background: var(--control-bg);
   color: var(--ink-primary);
-  font-size: 1rem;
-  padding: 0.52rem 0.62rem;
+  font-size: 0.9rem;
+  padding: 0.48rem 0.56rem;
 }
 
 .input:focus-visible,
-.select:focus-visible {
+.select:focus-visible,
+.button:focus-visible,
+.segmentedButton:focus-visible,
+.chip:focus-visible,
+.navLink:focus-visible,
+.sectionLink:focus-visible,
+.pageButton:focus-visible {
   outline: 2px solid var(--line-focus);
   outline-offset: 2px;
 }
 
 .range {
+  width: 100%;
   accent-color: var(--signal-accent);
 }
 
 .smallHelp {
   margin: 0;
-  font-size: 0.78rem;
   color: var(--ink-secondary);
+  font-size: 0.77rem;
 }
 
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .segmentedButton {
@@ -170,21 +180,21 @@
   border-radius: var(--radius-sm);
   background: var(--control-bg);
   color: var(--ink-secondary);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  padding: 0.45rem 0.5rem;
+  padding: 0.4rem 0.45rem;
 }
 
 .segmentedButtonActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 20%, var(--control-bg) 80%);
+  border-color: color-mix(in srgb, var(--signal-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
   color: color-mix(in srgb, var(--signal-accent-strong) 80%, var(--ink-primary) 20%);
 }
 
 .chipGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .chip {
@@ -192,42 +202,39 @@
   border-radius: 999px;
   background: var(--control-bg);
   color: var(--ink-secondary);
-  font-size: 0.78rem;
-  padding: 0.3rem 0.62rem;
+  font-size: 0.75rem;
+  padding: 0.28rem 0.56rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .chipActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 20%, var(--control-bg) 80%);
+  border-color: color-mix(in srgb, var(--signal-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
   color: color-mix(in srgb, var(--signal-accent-strong) 80%, var(--ink-primary) 20%);
 }
 
 .actionRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.48rem;
+  gap: 0.45rem;
 }
 
-.button,
-.linkButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.32rem;
+.button {
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.5rem 0.7rem;
-  text-decoration: none;
-  color: var(--ink-primary);
   background: transparent;
+  color: var(--ink-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.64rem;
 }
 
 .buttonPrimary {
   border-color: color-mix(in srgb, var(--signal-accent) 56%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 17%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 80%, var(--ink-primary) 20%);
+  background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
 }
 
 .buttonQuiet {
@@ -238,23 +245,34 @@
 
 .buttonAccent {
   border-color: color-mix(in srgb, var(--signal-positive) 54%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 18%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 15%, transparent);
   color: color-mix(in srgb, var(--signal-positive) 80%, var(--ink-primary) 20%);
 }
 
 .mainLayout {
   display: grid;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .nav {
   border: 1px solid var(--line-default);
   border-radius: var(--radius-lg);
   background: var(--surface-base);
-  padding: 0.7rem;
+  padding: 0.68rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.navTitle {
+  width: 100%;
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-weight: 700;
 }
 
 .navLink {
@@ -263,114 +281,29 @@
   background: var(--surface-inset);
   color: var(--ink-secondary);
   text-decoration: none;
-  font-size: 0.83rem;
-  padding: 0.45rem 0.62rem;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.56rem;
+  white-space: nowrap;
 }
 
 .navLinkActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 56%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 20%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-accent) 54%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 16%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 84%, var(--ink-primary) 16%);
 }
 
 .content {
-  display: grid;
-  gap: 1rem;
   min-width: 0;
-}
-
-.panel {
-  border: 1px solid var(--line-default);
-  border-radius: var(--radius-lg);
-  background: var(--surface-base);
-  padding: 0.95rem;
-}
-
-.panelHeader {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.7rem;
-  align-items: start;
-}
-
-.title {
-  margin: 0;
-  font-size: 1.06rem;
-  letter-spacing: -0.01em;
-}
-
-.subtitle {
-  margin: 0.22rem 0 0;
-  color: var(--ink-secondary);
-  font-size: 0.83rem;
-}
-
-.grid2,
-.grid3,
-.grid4 {
   display: grid;
-  gap: 0.85rem;
-}
-
-.metricCard {
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: var(--surface-inset);
-  padding: 0.75rem;
-}
-
-.metricLabel {
-  margin: 0;
-  color: var(--ink-tertiary);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.metricValue {
-  margin: 0.32rem 0;
-  font-size: 1.4rem;
-  line-height: 1.1;
-}
-
-.metricNote {
-  margin: 0;
-  color: var(--ink-secondary);
-  font-size: 0.78rem;
-}
-
-.chartLegend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.65rem;
-}
-
-.legendItem {
-  border: 1px solid var(--line-soft);
-  border-radius: 999px;
-  background: var(--surface-inset);
-  color: var(--ink-secondary);
-  font-size: 0.76rem;
-  padding: 0.2rem 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.legendSwatch {
-  width: 0.75rem;
-  height: 0.14rem;
-  border-radius: 999px;
+  gap: 0.9rem;
 }
 
 .sectionNav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-bottom: 0.65rem;
+  gap: 0.36rem;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 0.36rem;
 }
 
 .sectionLink {
@@ -379,8 +312,86 @@
   background: var(--surface-inset);
   color: var(--ink-secondary);
   text-decoration: none;
-  font-size: 0.78rem;
-  padding: 0.33rem 0.5rem;
+  font-size: 0.74rem;
+  padding: 0.28rem 0.46rem;
+}
+
+.panel {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+  padding: 0.84rem;
+}
+
+.anchorTarget {
+  scroll-margin-top: 6.25rem;
+}
+
+.panelHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: start;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.subtitle {
+  margin: 0.2rem 0 0;
+  color: var(--ink-secondary);
+  font-size: 0.8rem;
+  max-width: 70ch;
+}
+
+.grid2,
+.grid3,
+.grid4 {
+  display: grid;
+  gap: 0.74rem;
+}
+
+.metricCard {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  padding: 0.66rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.metricLabel {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.metricValue {
+  margin: 0.16rem 0;
+  font-size: 1.26rem;
+  line-height: 1.1;
+}
+
+.metricNote {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.77rem;
+}
+
+.legendSwatch {
+  width: 0.7rem;
+  height: 0.14rem;
+  border-radius: 999px;
 }
 
 .tableWrap {
@@ -406,30 +417,30 @@
 
 .tableHead th {
   color: var(--ink-tertiary);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   font-weight: 700;
-  background: color-mix(in srgb, var(--surface-inset) 93%, transparent);
+  background: color-mix(in srgb, var(--surface-inset) 92%, transparent);
 }
 
 .densityCozy .table th,
 .densityCozy .table td {
-  padding: 0.58rem;
+  padding: 0.5rem;
 }
 
 .densityCompact .table th,
 .densityCompact .table td {
-  padding: 0.4rem;
-  font-size: 0.82rem;
+  padding: 0.34rem 0.4rem;
+  font-size: 0.78rem;
 }
 
 .empty,
 .alert {
   border-radius: var(--radius-sm);
-  padding: 0.62rem;
-  margin: 0.4rem;
-  font-size: 0.82rem;
+  padding: 0.58rem;
+  margin: 0.38rem;
+  font-size: 0.8rem;
 }
 
 .empty {
@@ -439,17 +450,17 @@
 }
 
 .alert {
-  border: 1px solid color-mix(in srgb, var(--signal-negative) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-negative) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--signal-negative) 50%, transparent);
+  background: color-mix(in srgb, var(--signal-negative) 14%, transparent);
   color: color-mix(in srgb, var(--signal-negative) 78%, var(--ink-primary) 22%);
 }
 
 .pagination {
-  margin-top: 0.58rem;
+  margin-top: 0.54rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.55rem;
+  gap: 0.52rem;
   flex-wrap: wrap;
 }
 
@@ -458,14 +469,14 @@
   border-radius: var(--radius-sm);
   background: var(--surface-inset);
   color: var(--ink-secondary);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  padding: 0.34rem 0.56rem;
+  padding: 0.32rem 0.52rem;
 }
 
 .pageInfo {
   color: var(--ink-secondary);
-  font-size: 0.78rem;
+  font-size: 0.77rem;
 }
 
 .mono {
@@ -474,9 +485,14 @@
 }
 
 .chartSummary {
-  margin: 0.6rem 0 0;
+  margin: 0;
   color: var(--ink-secondary);
-  font-size: 0.8rem;
+  font-size: 0.79rem;
+}
+
+.reveal,
+.revealDelayed {
+  opacity: 1;
 }
 
 @media (min-width: 860px) {
@@ -499,19 +515,19 @@
 
 @media (min-width: 1120px) {
   .mainLayout {
-    grid-template-columns: minmax(220px, 250px) minmax(0, 1fr);
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
     align-items: start;
   }
 
   .nav {
     position: sticky;
-    top: 6.6rem;
+    top: 5.8rem;
     display: grid;
+    align-content: start;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .root,
   .skipLink {
     transition: none !important;
   }

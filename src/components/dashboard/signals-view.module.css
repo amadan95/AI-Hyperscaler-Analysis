@@ -1,0 +1,319 @@
+.heroGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.heroCard {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.heroHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.55rem;
+  align-items: start;
+}
+
+.heroKicker {
+  margin: 0;
+  font-size: 0.67rem;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.heroTitle {
+  margin: 0.28rem 0 0;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.12;
+}
+
+.heroEdge {
+  margin: 0;
+  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+  color: var(--ink-secondary);
+  font-size: 0.78rem;
+}
+
+.heroRationale {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.84rem;
+  max-width: 70ch;
+}
+
+.heroStats {
+  display: grid;
+  gap: 0.52rem;
+}
+
+.heroStat {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  padding: 0.56rem;
+  display: grid;
+  gap: 0.16rem;
+}
+
+.heroStatLabel {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.67rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.heroStatValue {
+  margin: 0;
+  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+  font-size: 0.96rem;
+}
+
+.deltaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.34rem;
+}
+
+.deltaChip {
+  border-radius: 999px;
+  border: 1px solid var(--line-default);
+  padding: 0.13rem 0.45rem;
+  font-size: 0.7rem;
+  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+}
+
+.deltaPositive {
+  border-color: color-mix(in srgb, var(--signal-positive) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 78%, var(--ink-primary) 22%);
+}
+
+.deltaNegative {
+  border-color: color-mix(in srgb, var(--signal-negative) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-negative) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 78%, var(--ink-primary) 22%);
+}
+
+.heroEmpty {
+  margin: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--ink-secondary);
+  padding: 0.66rem;
+  font-size: 0.8rem;
+}
+
+.stripGrid {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.stripCard {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.22rem;
+}
+
+.stripTitle {
+  margin: 0;
+  font-size: 0.67rem;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.stripValue {
+  margin: 0;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.stripNote {
+  margin: 0;
+  font-size: 0.77rem;
+  color: var(--ink-secondary);
+}
+
+.regimeBadge {
+  width: fit-content;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  padding: 0.1rem 0.38rem;
+}
+
+.regimeHigh {
+  border-color: color-mix(in srgb, var(--signal-positive) 42%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 78%, var(--ink-primary) 22%);
+}
+
+.regimeMedium {
+  border-color: color-mix(in srgb, var(--signal-warning) 42%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 78%, var(--ink-primary) 22%);
+}
+
+.regimeLow {
+  border-color: var(--line-default);
+  background: var(--surface-base);
+  color: var(--ink-secondary);
+}
+
+.bodyGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sideRail {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sideCard {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+  padding: 0.74rem;
+  display: grid;
+  gap: 0.54rem;
+}
+
+.sideTitle {
+  margin: 0;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: 0.96rem;
+}
+
+.sideHelp {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.77rem;
+}
+
+.sideList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.48rem;
+}
+
+.sideItem {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  padding: 0.52rem;
+  display: grid;
+  gap: 0.24rem;
+}
+
+.sideLabel {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.sideHeadline {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.sideMeta {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.76rem;
+}
+
+.glossaryCard {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+  padding: 0.74rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.glossaryTitle {
+  margin: 0;
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-size: 0.96rem;
+}
+
+.glossaryGrid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.glossaryTerm {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  padding: 0.5rem;
+  display: grid;
+  gap: 0.14rem;
+}
+
+.glossaryName {
+  margin: 0;
+  font-size: 0.67rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-weight: 700;
+}
+
+.glossaryText {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.77rem;
+}
+
+@media (min-width: 860px) {
+  .heroStats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stripGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .glossaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1140px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.78fr);
+    align-items: start;
+  }
+
+  .bodyGrid {
+    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.78fr);
+    align-items: start;
+  }
+}

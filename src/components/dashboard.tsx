@@ -1,10 +1,10 @@
 import { DashboardShell } from "@/components/dashboard/shell";
-import type { DashboardView } from "@/components/dashboard/types";
+import type { DashboardRoute } from "@/components/dashboard/types";
 
 type DashboardProps = {
-  routeView?: DashboardView;
+  routeView?: DashboardRoute;
 };
 
-export function Dashboard({ routeView = "overview" }: DashboardProps) {
+export function Dashboard({ routeView = "signals" }: DashboardProps) {
   return <DashboardShell routeView={routeView} />;
 }

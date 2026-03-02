@@ -4,27 +4,30 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { EVENT_WINDOWS, HYPERSCALER_TICKERS, LABS } from "@/lib/config";
-import { clearCache, cacheKey, readCache, writeCache } from "@/components/dashboard/cache";
+import { clearCache, readCache, scopedCacheKey, writeCache } from "@/components/dashboard/cache";
 import styles from "@/components/dashboard/dashboard.module.css";
+import { ContextView } from "@/components/dashboard/context-view";
 import { DiagnosticsView } from "@/components/dashboard/diagnostics-view";
-import { OverviewView } from "@/components/dashboard/overview-view";
 import { SignalsView } from "@/components/dashboard/signals-view";
 import type {
   AppliedFilters,
+  CorrelationResponse,
+  DashboardRoute,
   DashboardSort,
-  DashboardView,
   DensityMode,
   DraftFilters,
   EventResponse,
   EventStudyResponse,
+  FocusWindow,
+  ForwardSignal,
   ForwardSignalsResponse,
   LoadState,
+  PanelKey,
   PriceResponse,
   QueryControls,
   SourceTierFilter,
   StatusResponse,
   Theme,
-  CorrelationResponse,
 } from "@/components/dashboard/types";
 import {
   SOURCE_TIER_OPTIONS,
@@ -32,12 +35,14 @@ import {
   VIEW_PATHS,
   areFiltersEqual,
   buildSearchParams,
+  computeOpportunityDelta,
   createViewHref,
   defaultQueryControls,
   formatDate,
   formatDateTime,
   parseUrlState,
   readableError,
+  topOpportunity,
 } from "@/components/dashboard/utils";
 
 const THEME_STORAGE_KEY = "hyperscaler-dashboard-theme";
@@ -72,15 +77,20 @@ function emptyForwardSignals(): ForwardSignalsResponse {
 }
 
 type DashboardShellProps = {
-  routeView: DashboardView;
+  routeView: DashboardRoute;
 };
 
 type ResourceName = "prices" | "events" | "impacts" | "correlations" | "status" | "forward";
 
+type OpportunityDelta = {
+  edgeDeltaPct: number;
+  confidenceDelta: number;
+};
+
 export function DashboardShell({ routeView }: DashboardShellProps) {
   const [theme, setTheme] = useState<Theme>("light");
   const [isMounted, setIsMounted] = useState(false);
-  const [announcement, setAnnouncement] = useState("Dashboard ready.");
+  const [announcement, setAnnouncement] = useState("Editorial desk ready.");
   const [hydrated, setHydrated] = useState(false);
 
   const [draftFilters, setDraftFilters] = useState<DraftFilters>(() => parseUrlState("", routeView).filters);
@@ -88,6 +98,7 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
   const [controls, setControls] = useState<QueryControls>(() => defaultQueryControls(routeView));
 
   const [visibleChartTickers, setVisibleChartTickers] = useState<string[]>(appliedFilters.tickers);
+  const [opportunityDelta, setOpportunityDelta] = useState<OpportunityDelta | undefined>(undefined);
 
   const [pricesState, setPricesState] = useState<LoadState<PriceResponse>>({ loading: false, data: EMPTY_PRICES });
   const [eventsState, setEventsState] = useState<LoadState<EventResponse>>({ loading: false, data: EMPTY_EVENTS });
@@ -95,6 +106,8 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
   const [correlationsState, setCorrelationsState] = useState<LoadState<CorrelationResponse>>({ loading: false, data: EMPTY_CORRELATIONS });
   const [statusState, setStatusState] = useState<LoadState<StatusResponse>>({ loading: false, data: EMPTY_STATUS });
   const [forwardState, setForwardState] = useState<LoadState<ForwardSignalsResponse>>({ loading: false, data: emptyForwardSignals() });
+
+  const previousTopRef = useRef<ForwardSignal | undefined>(undefined);
 
   const requestIdRef = useRef<Record<ResourceName, number>>({
     prices: 0,
@@ -167,7 +180,7 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
     force: boolean,
     fallbackError: string,
   ) => {
-    const key = cacheKey(resource, appliedFilters);
+    const key = scopedCacheKey(resource, appliedFilters, routeView);
     if (!force) {
       const cached = readCache<T>(key);
       if (cached) {
@@ -212,23 +225,23 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
         abortRef.current[resource] = null;
       }
     }
-  }, [appliedFilters]);
+  }, [appliedFilters, routeView]);
 
   const loadPrices = useCallback((force = false) => runResourceFetch<PriceResponse>("prices", resourceUrl.prices, setPricesState, force, "Could not load market tape."), [resourceUrl.prices, runResourceFetch]);
   const loadEvents = useCallback((force = false) => runResourceFetch<EventResponse>("events", resourceUrl.events, setEventsState, force, "Could not load event feed."), [resourceUrl.events, runResourceFetch]);
   const loadImpacts = useCallback((force = false) => runResourceFetch<EventStudyResponse>("impacts", resourceUrl.impacts, setImpactsState, force, "Could not load event-study diagnostics."), [resourceUrl.impacts, runResourceFetch]);
   const loadCorrelations = useCallback((force = false) => runResourceFetch<CorrelationResponse>("correlations", resourceUrl.correlations, setCorrelationsState, force, "Could not load lag-correlation diagnostics."), [resourceUrl.correlations, runResourceFetch]);
-  const loadStatus = useCallback((force = false) => runResourceFetch<StatusResponse>("status", resourceUrl.status, setStatusState, force, "Could not load source health."), [resourceUrl.status, runResourceFetch]);
+  const loadStatus = useCallback((force = false) => runResourceFetch<StatusResponse>("status", resourceUrl.status, setStatusState, force, "Could not load source reliability."), [resourceUrl.status, runResourceFetch]);
   const loadForward = useCallback((force = false) => runResourceFetch<ForwardSignalsResponse>("forward", resourceUrl.forward, setForwardState, force, "Could not load forward-signal model output."), [resourceUrl.forward, runResourceFetch]);
 
   const refreshCurrentView = useCallback((force = false) => {
-    if (routeView === "overview") {
-      void Promise.allSettled([loadPrices(force), loadEvents(force), loadStatus(force), loadForward(force)]);
+    if (routeView === "signals") {
+      void Promise.allSettled([loadForward(force), loadStatus(force)]);
       return;
     }
 
-    if (routeView === "signals") {
-      void Promise.allSettled([loadForward(force), loadStatus(force)]);
+    if (routeView === "context") {
+      void Promise.allSettled([loadPrices(force), loadEvents(force), loadStatus(force), loadForward(force)]);
       return;
     }
 
@@ -244,9 +257,19 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
     setTheme(nextTheme);
 
     const parsed = parseUrlState(window.location.search, routeView);
+    if (parsed.controls.route !== routeView) {
+      const redirectedSearch = buildSearchParams(parsed.filters, {
+        ...parsed.controls,
+        route: parsed.controls.route,
+      }).toString();
+      const redirectedUrl = `${VIEW_PATHS[parsed.controls.route]}?${redirectedSearch}${window.location.hash}`;
+      window.location.replace(redirectedUrl);
+      return;
+    }
+
     setDraftFilters(parsed.filters);
     setAppliedFilters(parsed.filters);
-    setControls(parsed.controls);
+    setControls({ ...parsed.controls, route: routeView });
     setVisibleChartTickers(parsed.filters.tickers);
 
     setHydrated(true);
@@ -262,7 +285,7 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
   useEffect(() => {
     if (!hydrated) return;
     refreshCurrentView(false);
-    setAnnouncement("Dashboard refreshed for applied filters.");
+    setAnnouncement("View refreshed for applied filters.");
   }, [appliedFilters, hydrated, refreshCurrentView]);
 
   useEffect(() => {
@@ -270,11 +293,11 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
 
     const nextSearch = buildSearchParams(appliedFilters, {
       ...controls,
-      view: routeView,
+      route: routeView,
     }).toString();
 
-    const nextUrl = `${VIEW_PATHS[routeView]}?${nextSearch}`;
-    const currentUrl = `${window.location.pathname}${window.location.search}`;
+    const nextUrl = `${VIEW_PATHS[routeView]}?${nextSearch}${window.location.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
     if (nextUrl !== currentUrl) {
       window.history.replaceState(null, "", nextUrl);
     }
@@ -285,9 +308,19 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
 
     const onPopState = () => {
       const parsed = parseUrlState(window.location.search, routeView);
+      if (parsed.controls.route !== routeView) {
+        const redirectedSearch = buildSearchParams(parsed.filters, {
+          ...parsed.controls,
+          route: parsed.controls.route,
+        }).toString();
+        const redirectedUrl = `${VIEW_PATHS[parsed.controls.route]}?${redirectedSearch}${window.location.hash}`;
+        window.location.replace(redirectedUrl);
+        return;
+      }
+
       setDraftFilters(parsed.filters);
       setAppliedFilters(parsed.filters);
-      setControls(parsed.controls);
+      setControls({ ...parsed.controls, route: routeView });
       setVisibleChartTickers(parsed.filters.tickers);
       setAnnouncement("State restored from history.");
     };
@@ -303,8 +336,40 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
     };
   }, []);
 
+  useEffect(() => {
+    setVisibleChartTickers((previous) => {
+      const allowed = new Set(appliedFilters.tickers);
+      const kept = previous.filter((ticker) => allowed.has(ticker));
+      if (kept.length > 0) return kept;
+      return [...appliedFilters.tickers];
+    });
+  }, [appliedFilters.tickers]);
+
+  useEffect(() => {
+    const currentTop = topOpportunity(forwardState.data?.topSignals ?? []);
+    const delta = computeOpportunityDelta(currentTop, previousTopRef.current);
+    setOpportunityDelta(delta);
+    previousTopRef.current = currentTop;
+  }, [forwardState.data]);
+
   function updateDraft(partial: Partial<DraftFilters>) {
     setDraftFilters((previous) => ({ ...previous, ...partial }));
+  }
+
+  function updatePanel(panel: PanelKey) {
+    setControls((previous) => ({ ...previous, panel }));
+  }
+
+  function updateFocusLab(focusLab: string | undefined) {
+    setControls((previous) => ({ ...previous, focusLab, panel: "tape", page: 1 }));
+  }
+
+  function updateFocusTicker(focusTicker: string | undefined) {
+    setControls((previous) => ({ ...previous, focusTicker, panel: "tape", page: 1 }));
+  }
+
+  function updateWindow(window: FocusWindow) {
+    setControls((previous) => ({ ...previous, window, panel: "timeline" }));
   }
 
   function toggleDraftLab(labId: string) {
@@ -363,35 +428,41 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
   function resetFilters() {
     const defaults = parseUrlState("", routeView).filters;
     setDraftFilters(defaults);
-    setAnnouncement("Draft filters reset to defaults. Apply to refresh results.");
+    setAnnouncement("Draft filters reset. Apply to refresh results.");
   }
 
   function refreshView() {
     clearCache();
     refreshCurrentView(true);
-    setAnnouncement("View refresh requested.");
+    setAnnouncement("Manual refresh requested.");
   }
 
-  const isBusy = pricesState.loading || eventsState.loading || impactsState.loading || correlationsState.loading || statusState.loading || forwardState.loading;
+  const isBusy =
+    routeView === "signals"
+      ? forwardState.loading || statusState.loading
+      : routeView === "context"
+        ? pricesState.loading || eventsState.loading || statusState.loading || forwardState.loading
+        : eventsState.loading || impactsState.loading || correlationsState.loading || statusState.loading;
+
   const latestEventDate = (eventsState.data?.events ?? []).reduce<string>((latest, event) => event.publishedAt > latest ? event.publishedAt : latest, "");
 
   const navLinks = [
-    { view: "overview" as const, label: "Overview" },
-    { view: "signals" as const, label: "Signals" },
-    { view: "diagnostics" as const, label: "Diagnostics" },
+    { route: "signals" as const, label: "Signals Home" },
+    { route: "context" as const, label: "Context" },
+    { route: "diagnostics" as const, label: "Diagnostics" },
   ];
 
   return (
     <main className={styles.root} aria-busy={isBusy}>
-      <a className={styles.skipLink} href="#dashboard-main">Skip to Dashboard Content</a>
+      <a className={styles.skipLink} href="#dashboard-main">Skip to dashboard content</a>
       <p className="sr-only" aria-live="polite">{announcement}</p>
 
       <div className={styles.app}>
         <header className={styles.commandBar}>
           <div className={styles.commandHeader}>
             <div>
-              <h1 className={styles.commandTitle}>AI Lab vs Hyperscalers</h1>
-              <p className={styles.commandSubtext}>Greenfield shell with explicit apply/reset workflow, URL state, and isolated panel recovery.</p>
+              <h1 className={styles.commandTitle}>Editorial Intelligence Desk</h1>
+              <p className={styles.commandSubtext}>Signals-first analyst surface: opportunity, context, and diagnostics with explicit apply/reset and route-aware fetch isolation.</p>
             </div>
             <div className={styles.commandMeta}>
               {hasUnsavedChanges && <span className={styles.unsaved}>Unsaved Filter Changes</span>}
@@ -402,7 +473,7 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
                 onClick={() => setTheme((previous) => (previous === "dark" ? "light" : "dark"))}
                 aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
               >
-                {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
+                {theme === "dark" ? "Light Theme" : "Dark Theme"}
               </button>
             </div>
           </div>
@@ -520,25 +591,26 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
           </div>
 
           <div className={styles.actionRow}>
-            <button type="button" className={`${styles.button} ${styles.buttonPrimary}`} onClick={applyFilters}>Apply Filters</button>
-            <button type="button" className={`${styles.button} ${styles.buttonQuiet}`} onClick={resetFilters}>Reset Draft</button>
-            <button type="button" className={`${styles.button} ${styles.buttonAccent}`} onClick={refreshView}>Refresh View</button>
+            <button type="button" className={`${styles.button} ${styles.buttonPrimary}`} onClick={applyFilters}>Apply</button>
+            <button type="button" className={`${styles.button} ${styles.buttonQuiet}`} onClick={resetFilters}>Reset</button>
+            <button type="button" className={`${styles.button} ${styles.buttonAccent}`} onClick={refreshView}>Refresh</button>
           </div>
 
           <p className={styles.smallHelp}>
-            Applied window: <span className={styles.mono}>{appliedFilters.from} → {appliedFilters.to}</span>
-            {latestEventDate ? ` · Latest event: ${formatDate(latestEventDate)}` : " · Latest event: -"}
-            {statusState.data?.latestRun ? ` · Last run: ${statusState.data.latestRun.type} (${statusState.data.latestRun.success ? "success" : "failed"}) at ${formatDateTime(statusState.data.latestRun.createdAt)}` : ""}
+            Applied window <span className={styles.mono}>{appliedFilters.from} → {appliedFilters.to}</span>
+            {latestEventDate ? ` · Latest event ${formatDate(latestEventDate)}` : " · Latest event -"}
+            {statusState.data?.latestRun ? ` · Last run ${statusState.data.latestRun.type} (${statusState.data.latestRun.success ? "success" : "failed"}) at ${formatDateTime(statusState.data.latestRun.createdAt)}` : ""}
           </p>
         </header>
 
         <div className={styles.mainLayout}>
-          <nav className={styles.nav} aria-label="Dashboard views">
+          <nav className={styles.nav} aria-label="Desk routes">
+            <p className={styles.navTitle}>Desk Routes</p>
             {navLinks.map((link) => {
-              const href = createViewHref(link.view, appliedFilters, controls);
-              const active = link.view === routeView;
+              const href = createViewHref(link.route, appliedFilters, controls);
+              const active = link.route === routeView;
               return (
-                <Link key={link.view} href={href} className={clsx(styles.navLink, active && styles.navLinkActive)} aria-current={active ? "page" : undefined}>
+                <Link key={link.route} href={href} className={clsx(styles.navLink, active && styles.navLinkActive)} aria-current={active ? "page" : undefined}>
                   {link.label}
                 </Link>
               );
@@ -546,13 +618,34 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
           </nav>
 
           <div id="dashboard-main" className={styles.content} tabIndex={-1}>
-            {routeView === "overview" && (
-              <OverviewView
-                isMounted={isMounted}
+            {routeView === "signals" && (
+              <SignalsView
                 sort={controls.sort}
                 density={controls.density}
                 page={controls.page}
                 onPageChange={(page) => setControls((previous) => ({ ...previous, page: Math.max(1, page) }))}
+                onSetPanel={updatePanel}
+                displayTicker={displayTicker}
+                forwardState={forwardState}
+                statusState={statusState}
+                opportunityDelta={opportunityDelta}
+                onRetryForward={() => void loadForward(true)}
+                onRetryStatus={() => void loadStatus(true)}
+              />
+            )}
+
+            {routeView === "context" && (
+              <ContextView
+                isMounted={isMounted}
+                sort={controls.sort}
+                filters={appliedFilters}
+                focusLab={controls.focusLab}
+                focusTicker={controls.focusTicker}
+                window={controls.window ?? "1w"}
+                onFocusLabChange={updateFocusLab}
+                onFocusTickerChange={updateFocusTicker}
+                onWindowChange={updateWindow}
+                onSetPanel={updatePanel}
                 pricesState={pricesState}
                 eventsState={eventsState}
                 statusState={statusState}
@@ -568,24 +661,13 @@ export function DashboardShell({ routeView }: DashboardShellProps) {
               />
             )}
 
-            {routeView === "signals" && (
-              <SignalsView
-                sort={controls.sort}
-                density={controls.density}
-                page={controls.page}
-                onPageChange={(page) => setControls((previous) => ({ ...previous, page: Math.max(1, page) }))}
-                displayTicker={displayTicker}
-                forwardState={forwardState}
-                onRetryForward={() => void loadForward(true)}
-              />
-            )}
-
             {routeView === "diagnostics" && (
               <DiagnosticsView
                 sort={controls.sort}
                 density={controls.density}
                 page={controls.page}
                 onPageChange={(page) => setControls((previous) => ({ ...previous, page: Math.max(1, page) }))}
+                onSetPanel={updatePanel}
                 displayTicker={displayTicker}
                 eventsState={eventsState}
                 impactsState={impactsState}
