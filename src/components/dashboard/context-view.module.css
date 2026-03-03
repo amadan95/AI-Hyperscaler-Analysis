@@ -1,16 +1,17 @@
 .contextGrid {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.8rem;
 }
 
 .chartPanel,
 .timelinePanel {
   border: 1px solid var(--line-default);
   border-radius: var(--radius-lg);
-  background: var(--surface-base);
-  padding: 0.82rem;
+  background: color-mix(in srgb, var(--surface-base) 92%, transparent);
+  box-shadow: var(--shadow-soft);
+  padding: 0.9rem;
   display: grid;
-  gap: 0.62rem;
+  gap: 0.68rem;
 }
 
 .chartLead {
@@ -22,7 +23,7 @@
 .chartWrap {
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-md);
-  background: var(--surface-raised);
+  background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
   overflow: hidden;
 }
 
@@ -37,17 +38,18 @@
   border-radius: 999px;
   background: var(--surface-inset);
   color: var(--ink-secondary);
-  padding: 0.18rem 0.46rem;
+  padding: 0.2rem 0.5rem;
   font-size: 0.72rem;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
 }
 
 .legendChipActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 50%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-accent) 52%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 16%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 84%, var(--ink-primary) 16%);
 }
 
 .legendSwatch {
@@ -58,7 +60,7 @@
 
 .focusRow {
   display: grid;
-  gap: 0.54rem;
+  gap: 0.56rem;
 }
 
 .focusField {
@@ -69,19 +71,23 @@
 .focusLabel {
   margin: 0;
   color: var(--ink-tertiary);
-  font-size: 0.66rem;
-  letter-spacing: 0.07em;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .focusSelect {
   border: 1px solid var(--control-border);
-  border-radius: var(--radius-sm);
+  border-radius: 0.72rem;
   background: var(--control-bg);
   color: var(--ink-primary);
   font-size: 0.84rem;
-  padding: 0.42rem 0.48rem;
+  padding: 0.44rem 0.5rem;
+}
+
+.focusSelect:hover {
+  border-color: var(--control-border-hover);
 }
 
 .focusSelect:focus-visible {
@@ -98,7 +104,7 @@
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-md);
   background: var(--surface-inset);
-  padding: 0.56rem;
+  padding: 0.58rem;
   display: grid;
   gap: 0.16rem;
 }
@@ -106,16 +112,15 @@
 .compositionLabel {
   margin: 0;
   color: var(--ink-tertiary);
-  font-size: 0.67rem;
-  letter-spacing: 0.07em;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .compositionValue {
   margin: 0;
-  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
-  font-size: 1.14rem;
+  font-size: 1.16rem;
   line-height: 1;
 }
 
@@ -129,7 +134,7 @@
   border: 1px solid color-mix(in srgb, var(--signal-accent) 30%, var(--line-soft) 70%);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--signal-accent) 10%, var(--surface-inset) 90%);
-  padding: 0.64rem;
+  padding: 0.66rem;
   color: var(--ink-primary);
   font-size: 0.8rem;
 }
@@ -138,7 +143,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.55rem;
+  gap: 0.56rem;
 }
 
 .timelineWindowButtons {
@@ -148,12 +153,12 @@
 
 .windowButton {
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius-sm);
+  border-radius: 0.66rem;
   background: var(--surface-inset);
   color: var(--ink-secondary);
-  font-size: 0.74rem;
-  font-weight: 600;
-  padding: 0.26rem 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.28rem 0.5rem;
 }
 
 .windowButton:focus-visible {
@@ -164,12 +169,12 @@
 .windowButtonActive {
   border-color: color-mix(in srgb, var(--signal-accent) 50%, transparent);
   background: color-mix(in srgb, var(--signal-accent) 15%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
+  color: color-mix(in srgb, var(--signal-accent-strong) 84%, var(--ink-primary) 16%);
 }
 
 .timelineGroups {
   display: grid;
-  gap: 0.56rem;
+  gap: 0.58rem;
 }
 
 .timelineGroup {
@@ -181,13 +186,13 @@
 
 .timelineGroupTitle {
   margin: 0;
-  padding: 0.46rem 0.56rem;
+  padding: 0.5rem 0.58rem;
   border-bottom: 1px solid var(--line-soft);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.12em;
   color: var(--ink-tertiary);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .timelineList {
@@ -199,8 +204,8 @@
 
 .timelineEvent {
   display: grid;
-  gap: 0.16rem;
-  padding: 0.46rem 0.56rem;
+  gap: 0.18rem;
+  padding: 0.5rem 0.58rem;
   border-bottom: 1px solid var(--line-soft);
 }
 
@@ -211,8 +216,8 @@
 .timelineEventMeta {
   margin: 0;
   color: var(--ink-tertiary);
-  font-size: 0.67rem;
-  letter-spacing: 0.05em;
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -223,7 +228,7 @@
 }
 
 .timelineLink {
-  color: color-mix(in srgb, var(--signal-accent) 82%, var(--ink-primary) 18%);
+  color: color-mix(in srgb, var(--signal-accent) 84%, var(--ink-primary) 16%);
   text-decoration: underline;
   text-underline-offset: 0.12rem;
 }
@@ -234,7 +239,7 @@
   border-radius: var(--radius-sm);
   background: var(--surface-inset);
   color: var(--ink-secondary);
-  padding: 0.62rem;
+  padding: 0.64rem;
   font-size: 0.8rem;
 }
 

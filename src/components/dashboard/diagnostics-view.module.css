@@ -31,7 +31,7 @@
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-md);
   background: var(--surface-inset);
-  padding: 0.62rem;
+  padding: 0.64rem;
   display: grid;
   gap: 0.18rem;
 }
@@ -39,16 +39,15 @@
 .qualityLabel {
   margin: 0;
   color: var(--ink-tertiary);
-  font-size: 0.68rem;
-  letter-spacing: 0.07em;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .qualityValue {
   margin: 0;
-  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
-  font-size: 1.1rem;
+  font-size: 1.14rem;
 }
 
 .qualityNote {
