@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, IBM_Plex_Mono, Manrope } from "next/font/google";
+import { IBM_Plex_Mono, Schibsted_Grotesk, Spectral } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const spectral = Spectral({
   variable: "--font-fraunces",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
-const manrope = Manrope({
+const schibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-manrope",
   subsets: ["latin"],
 });
@@ -19,14 +20,14 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Lab Releases vs Hyperscaler Stocks",
-  description: "Event-study dashboard comparing AI lab releases with hyperscaler stock movements.",
+  title: "Midnight Editorial Desk",
+  description: "Dark editorial analyst workstation for AI lab releases and hyperscaler market reactions.",
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f7fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#020617" },
+    { media: "(prefers-color-scheme: light)", color: "#ece6db" },
+    { media: "(prefers-color-scheme: dark)", color: "#07111f" },
   ],
 };
 
@@ -37,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${fraunces.variable} ${manrope.variable} ${ibmPlexMono.variable} antialiased`}>
+      <body className={`${spectral.variable} ${schibstedGrotesk.variable} ${ibmPlexMono.variable} antialiased`}>
         {children}
       </body>
     </html>

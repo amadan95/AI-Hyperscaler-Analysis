@@ -1,80 +1,135 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --desk-canvas: #f5f7fb;
-  --desk-backdrop: #e7edf7;
-  --surface-base: rgba(255, 255, 255, 0.82);
-  --surface-raised: rgba(255, 255, 255, 0.94);
-  --surface-inset: rgba(244, 248, 255, 0.86);
+  --desk-canvas: #07111f;
+  --desk-backdrop: #0d182a;
+  --desk-grid: rgba(129, 161, 197, 0.06);
+  --desk-halation: rgba(80, 188, 255, 0.18);
 
-  --ink-primary: #111827;
-  --ink-secondary: #334155;
-  --ink-tertiary: #475569;
-  --ink-muted: #64748b;
+  --surface-base: rgba(11, 20, 35, 0.78);
+  --surface-panel: rgba(12, 24, 42, 0.86);
+  --surface-rail: rgba(8, 16, 28, 0.92);
+  --surface-raised: rgba(20, 31, 53, 0.96);
+  --surface-inset: rgba(8, 15, 26, 0.88);
+  --surface-muted: rgba(40, 55, 79, 0.5);
 
-  --line-soft: rgba(15, 23, 42, 0.08);
-  --line-default: rgba(15, 23, 42, 0.14);
-  --line-strong: rgba(15, 23, 42, 0.22);
-  --line-focus: rgba(14, 116, 144, 0.62);
+  --ink-primary: #f4efe6;
+  --ink-secondary: #c7d0de;
+  --ink-tertiary: #8e9ab0;
+  --ink-muted: #65738d;
 
-  --control-bg: rgba(255, 255, 255, 0.95);
-  --control-border: rgba(15, 23, 42, 0.16);
-  --control-border-hover: rgba(15, 23, 42, 0.28);
+  --line-soft: rgba(132, 150, 182, 0.12);
+  --line-default: rgba(132, 150, 182, 0.2);
+  --line-strong: rgba(160, 178, 212, 0.34);
+  --line-focus: rgba(88, 213, 255, 0.72);
 
-  --signal-accent: #0f766e;
-  --signal-accent-strong: #115e59;
-  --signal-positive: #15803d;
-  --signal-negative: #b91c1c;
-  --signal-warning: #b45309;
-  --signal-fallback: #92400e;
+  --control-bg: rgba(9, 17, 29, 0.92);
+  --control-border: rgba(132, 150, 182, 0.24);
+  --control-border-hover: rgba(170, 193, 231, 0.42);
 
-  --plot-grid: rgba(51, 65, 85, 0.2);
-  --plot-axis: rgba(15, 23, 42, 0.9);
+  --signal-accent: #59d5ff;
+  --signal-accent-strong: #a8ecff;
+  --signal-positive: #7ce0b6;
+  --signal-negative: #ff8c9b;
+  --signal-warning: #d4a76a;
+  --signal-fallback: #c48f58;
 
-  --radius-sm: 0.75rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.4rem;
-  --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
-  --shadow-hard: 0 20px 52px rgba(15, 23, 42, 0.18);
+  --plot-grid: rgba(142, 160, 193, 0.16);
+  --plot-axis: rgba(239, 244, 251, 0.88);
+
+  --radius-sm: 0.82rem;
+  --radius-md: 1.08rem;
+  --radius-lg: 1.55rem;
+  --shadow-soft: 0 24px 52px rgba(1, 6, 19, 0.34);
+  --shadow-hard: 0 36px 84px rgba(1, 6, 19, 0.58);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --desk-canvas: #020617;
-  --desk-backdrop: #0b1220;
-  --surface-base: rgba(15, 23, 42, 0.74);
-  --surface-raised: rgba(15, 23, 42, 0.9);
-  --surface-inset: rgba(12, 18, 33, 0.9);
+  --desk-canvas: #07111f;
+  --desk-backdrop: #0d182a;
+  --desk-grid: rgba(129, 161, 197, 0.06);
+  --desk-halation: rgba(80, 188, 255, 0.18);
 
-  --ink-primary: #e2e8f0;
-  --ink-secondary: #cbd5e1;
-  --ink-tertiary: #94a3b8;
-  --ink-muted: #64748b;
+  --surface-base: rgba(11, 20, 35, 0.78);
+  --surface-panel: rgba(12, 24, 42, 0.86);
+  --surface-rail: rgba(8, 16, 28, 0.92);
+  --surface-raised: rgba(20, 31, 53, 0.96);
+  --surface-inset: rgba(8, 15, 26, 0.88);
+  --surface-muted: rgba(40, 55, 79, 0.5);
 
-  --line-soft: rgba(148, 163, 184, 0.16);
-  --line-default: rgba(148, 163, 184, 0.26);
-  --line-strong: rgba(148, 163, 184, 0.4);
-  --line-focus: rgba(45, 212, 191, 0.6);
+  --ink-primary: #f4efe6;
+  --ink-secondary: #c7d0de;
+  --ink-tertiary: #8e9ab0;
+  --ink-muted: #65738d;
 
-  --control-bg: rgba(10, 18, 32, 0.92);
-  --control-border: rgba(148, 163, 184, 0.32);
-  --control-border-hover: rgba(148, 163, 184, 0.46);
+  --line-soft: rgba(132, 150, 182, 0.12);
+  --line-default: rgba(132, 150, 182, 0.2);
+  --line-strong: rgba(160, 178, 212, 0.34);
+  --line-focus: rgba(88, 213, 255, 0.72);
 
-  --signal-accent: #2dd4bf;
-  --signal-accent-strong: #14b8a6;
-  --signal-positive: #4ade80;
-  --signal-negative: #f87171;
-  --signal-warning: #fb923c;
-  --signal-fallback: #f59e0b;
+  --control-bg: rgba(9, 17, 29, 0.92);
+  --control-border: rgba(132, 150, 182, 0.24);
+  --control-border-hover: rgba(170, 193, 231, 0.42);
 
-  --plot-grid: rgba(148, 163, 184, 0.22);
-  --plot-axis: rgba(203, 213, 225, 0.9);
+  --signal-accent: #59d5ff;
+  --signal-accent-strong: #a8ecff;
+  --signal-positive: #7ce0b6;
+  --signal-negative: #ff8c9b;
+  --signal-warning: #d4a76a;
+  --signal-fallback: #c48f58;
 
-  --shadow-soft: 0 24px 56px rgba(1, 6, 20, 0.56);
-  --shadow-hard: 0 30px 72px rgba(1, 6, 20, 0.7);
+  --plot-grid: rgba(142, 160, 193, 0.16);
+  --plot-axis: rgba(239, 244, 251, 0.88);
+
+  --shadow-soft: 0 24px 52px rgba(1, 6, 19, 0.34);
+  --shadow-hard: 0 36px 84px rgba(1, 6, 19, 0.58);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --desk-canvas: #ece6db;
+  --desk-backdrop: #ddd6c9;
+  --desk-grid: rgba(40, 55, 79, 0.06);
+  --desk-halation: rgba(51, 153, 210, 0.12);
+
+  --surface-base: rgba(254, 251, 246, 0.84);
+  --surface-panel: rgba(255, 252, 248, 0.92);
+  --surface-rail: rgba(245, 239, 230, 0.95);
+  --surface-raised: rgba(255, 255, 255, 0.98);
+  --surface-inset: rgba(243, 237, 228, 0.9);
+  --surface-muted: rgba(201, 190, 175, 0.46);
+
+  --ink-primary: #132131;
+  --ink-secondary: #3f4f62;
+  --ink-tertiary: #667384;
+  --ink-muted: #7d8896;
+
+  --line-soft: rgba(36, 49, 68, 0.08);
+  --line-default: rgba(36, 49, 68, 0.16);
+  --line-strong: rgba(36, 49, 68, 0.28);
+  --line-focus: rgba(34, 128, 184, 0.58);
+
+  --control-bg: rgba(255, 255, 255, 0.96);
+  --control-border: rgba(36, 49, 68, 0.16);
+  --control-border-hover: rgba(36, 49, 68, 0.28);
+
+  --signal-accent: #1387b6;
+  --signal-accent-strong: #0b688c;
+  --signal-positive: #248c67;
+  --signal-negative: #b65569;
+  --signal-warning: #a87336;
+  --signal-fallback: #986b35;
+
+  --plot-grid: rgba(72, 93, 121, 0.16);
+  --plot-axis: rgba(19, 33, 49, 0.9);
+
+  --shadow-soft: 0 22px 50px rgba(29, 34, 48, 0.08);
+  --shadow-hard: 0 30px 74px rgba(29, 34, 48, 0.16);
 }
 
 @theme inline {
@@ -94,9 +149,10 @@ body {
   position: relative;
   min-height: 100vh;
   background:
-    radial-gradient(1300px 720px at 12% -20%, color-mix(in srgb, var(--signal-accent) 18%, transparent), transparent 54%),
-    radial-gradient(980px 600px at 88% -10%, color-mix(in srgb, var(--signal-warning) 18%, transparent), transparent 58%),
-    linear-gradient(160deg, var(--desk-canvas), var(--desk-backdrop));
+    radial-gradient(860px 480px at 14% -8%, var(--desk-halation), transparent 62%),
+    radial-gradient(820px 520px at 100% -6%, color-mix(in srgb, var(--signal-warning) 10%, transparent), transparent 65%),
+    linear-gradient(180deg, color-mix(in srgb, var(--desk-backdrop) 70%, transparent), transparent 26%),
+    linear-gradient(155deg, var(--desk-canvas), var(--desk-backdrop));
   color: var(--ink-primary);
   font-family: var(--font-manrope), "Avenir Next", "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
@@ -108,10 +164,25 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.3;
-  background-image: linear-gradient(transparent 95%, rgba(127, 141, 170, 0.12) 100%);
-  background-size: 100% 18px;
-  mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
+  opacity: 0.8;
+  background:
+    linear-gradient(transparent 0, transparent calc(100% - 1px), var(--desk-grid) calc(100% - 1px)),
+    linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), var(--desk-grid) calc(100% - 1px));
+  background-size: 100% 24px, 24px 100%;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 0 0.8px, transparent 1.2px),
+    radial-gradient(circle at 80% 60%, rgba(255, 255, 255, 0.26) 0 0.7px, transparent 1px);
+  background-size: 22px 22px, 28px 28px;
+  mix-blend-mode: soft-light;
 }
 
 h1,
@@ -121,6 +192,10 @@ h4,
 h5,
 h6 {
   font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--signal-accent) 28%, transparent);
 }
 
 :where(a, button, input, textarea, select):focus-visible {
@@ -133,41 +208,42 @@ h6 {
   align-items: center;
   border-radius: 999px;
   border: 1px solid transparent;
-  padding: 0.2rem 0.62rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  min-height: 1.55rem;
+  padding: 0.18rem 0.62rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .badge-high {
-  border-color: color-mix(in srgb, var(--signal-positive) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-positive) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 88%, var(--ink-primary) 12%);
 }
 
 .badge-medium {
-  border-color: color-mix(in srgb, var(--signal-warning) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-warning) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 92%, var(--ink-primary) 8%);
 }
 
 .badge-low {
   border-color: var(--line-default);
-  background: var(--surface-inset);
+  background: color-mix(in srgb, var(--surface-muted) 48%, transparent);
   color: var(--ink-secondary);
 }
 
 .badge-priority-high {
   border-color: color-mix(in srgb, var(--signal-negative) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-negative) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-negative) 84%, var(--ink-primary) 16%);
+  background: color-mix(in srgb, var(--signal-negative) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 92%, var(--ink-primary) 8%);
 }
 
 .badge-priority-medium {
   border-color: color-mix(in srgb, var(--signal-warning) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 84%, var(--ink-primary) 16%);
+  background: color-mix(in srgb, var(--signal-warning) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 92%, var(--ink-primary) 8%);
 }
 
 .badge-priority-low {
@@ -178,57 +254,58 @@ h6 {
 
 .badge-official {
   border-color: color-mix(in srgb, var(--signal-accent) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 84%, var(--ink-primary) 16%);
+  background: color-mix(in srgb, var(--signal-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 88%, var(--ink-primary) 12%);
 }
 
 .badge-fallback {
   border-color: color-mix(in srgb, var(--signal-fallback) 48%, transparent);
-  background: color-mix(in srgb, var(--signal-fallback) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-fallback) 84%, var(--ink-primary) 16%);
+  background: color-mix(in srgb, var(--signal-fallback) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-fallback) 92%, var(--ink-primary) 8%);
 }
 
 .tone-positive {
-  color: color-mix(in srgb, var(--signal-positive) 80%, var(--ink-primary) 20%);
+  color: color-mix(in srgb, var(--signal-positive) 88%, var(--ink-primary) 12%);
 }
 
 .tone-negative {
-  color: color-mix(in srgb, var(--signal-negative) 80%, var(--ink-primary) 20%);
+  color: color-mix(in srgb, var(--signal-negative) 88%, var(--ink-primary) 12%);
 }
 
 .corr-positive-strong {
-  background: color-mix(in srgb, var(--signal-positive) 24%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 86%, var(--ink-primary) 14%);
+  background: color-mix(in srgb, var(--signal-positive) 18%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 92%, var(--ink-primary) 8%);
 }
 
 .corr-positive {
-  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 74%, var(--ink-primary) 26%);
+  background: color-mix(in srgb, var(--signal-positive) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 82%, var(--ink-primary) 18%);
 }
 
 .corr-negative-strong {
-  background: color-mix(in srgb, var(--signal-negative) 24%, transparent);
-  color: color-mix(in srgb, var(--signal-negative) 86%, var(--ink-primary) 14%);
+  background: color-mix(in srgb, var(--signal-negative) 18%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 92%, var(--ink-primary) 8%);
 }
 
 .corr-negative {
-  background: color-mix(in srgb, var(--signal-negative) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-negative) 74%, var(--ink-primary) 26%);
+  background: color-mix(in srgb, var(--signal-negative) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 82%, var(--ink-primary) 18%);
 }
 
 .corr-neutral {
-  background: var(--surface-inset);
+  background: color-mix(in srgb, var(--surface-muted) 48%, transparent);
   color: var(--ink-secondary);
 }
 
 .inline-link {
-  color: color-mix(in srgb, var(--signal-accent) 85%, var(--ink-primary) 15%);
+  color: color-mix(in srgb, var(--signal-accent) 90%, var(--ink-primary) 10%);
   text-decoration: underline;
-  text-underline-offset: 0.14rem;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18rem;
 }
 
 .inline-link:hover {
-  color: color-mix(in srgb, var(--signal-accent-strong) 86%, var(--ink-primary) 14%);
+  color: color-mix(in srgb, var(--signal-accent-strong) 92%, var(--ink-primary) 8%);
 }
 
 @media (prefers-reduced-motion: reduce) {

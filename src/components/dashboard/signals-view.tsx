@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import shared from "@/components/dashboard/dashboard.module.css";
 import styles from "@/components/dashboard/signals-view.module.css";
 import { GlossaryInline } from "@/components/dashboard/glossary-inline";
@@ -59,6 +60,12 @@ export function SignalsView({
   const { pageItems, currentPage, totalPages } = paginate(signals, page, pageSize);
   const leadSignal = topOpportunity(forward?.topSignals ?? []);
 
+  function confidenceClass(confidenceBand: "high" | "medium" | "low"): string {
+    if (confidenceBand === "high") return styles.confidenceHigh;
+    if (confidenceBand === "medium") return styles.confidenceMedium;
+    return styles.confidenceLow;
+  }
+
   return (
     <>
       <nav className={shared.sectionNav} aria-label="Signals sections">
@@ -71,7 +78,7 @@ export function SignalsView({
         <HeroOpportunity signal={leadSignal} delta={opportunityDelta} displayTicker={displayTicker} asOf={forward?.asOf} />
 
         <aside className={styles.sideCard}>
-          <h2 className={styles.sideTitle}>Immediate Next Action</h2>
+          <h2 className={styles.sideTitle}>Lead action</h2>
           {(forward?.nextBestActions ?? []).length === 0 ? (
             <p className={styles.sideHelp}>No next actions available. Lower confidence threshold or widen date range to regenerate guidance.</p>
           ) : (
@@ -91,7 +98,8 @@ export function SignalsView({
           <div className={shared.panelHeader}>
             <div>
               <h2 className={shared.title}>Ranked Opportunities</h2>
-              <p className={shared.subtitle}>CAR: cumulative abnormal return. Sig Rate: share of significant post-release outcomes.</p>
+              <p className={shared.subtitle}>Top ranked trade expressions ordered by signal quality, event-study edge, and lag behavior.</p>
+              <p className={styles.tableLead}>CAR = cumulative abnormal return. Sig Rate = share of significant post-release outcomes.</p>
             </div>
             <p className={shared.smallHelp}>Model horizon: {forward?.signalWindowDays ?? 7} days</p>
           </div>
@@ -129,11 +137,23 @@ export function SignalsView({
                     <tr key={`${signal.labId}-${signal.ticker}`}>
                       <th scope="row">{signal.labName}</th>
                       <td>{displayTicker(signal.ticker)}</td>
-                      <td className={signal.direction === "long-bias" ? "tone-positive" : "tone-negative"}>{signal.direction === "long-bias" ? "Long" : "Short"}</td>
+                      <td className={`${styles.tableTone} ${signal.direction === "long-bias" ? "tone-positive" : "tone-negative"}`}>
+                        {signal.direction === "long-bias" ? "Long bias" : "Short bias"}
+                      </td>
                       <td className={shared.mono}>{signal.avgCarPct.toFixed(2)}%</td>
                       <td className={shared.mono}>{signal.sigRatePct.toFixed(1)}%</td>
                       <td className={shared.mono}>{signal.bestLagDays}d ({signal.bestLagCorrelation.toFixed(2)})</td>
-                      <td><span className={`badge ${confidenceBadgeClass(signal.confidenceBand)}`}>{(signal.confidenceScore * 100).toFixed(0)}</span></td>
+                      <td>
+                        <div className={styles.confidenceCell}>
+                          <div className={styles.confidenceTrackSmall} aria-hidden="true">
+                            <span
+                              className={`${styles.confidenceFillSmall} ${confidenceClass(signal.confidenceBand)}`}
+                              style={{ width: `${(signal.confidenceScore * 100).toFixed(0)}%` } as CSSProperties}
+                            />
+                          </div>
+                          <span className={shared.mono}>{(signal.confidenceScore * 100).toFixed(0)}</span>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -150,8 +170,29 @@ export function SignalsView({
 
         <aside className={styles.sideRail}>
           <article className={styles.sideCard}>
-            <h2 className={styles.sideTitle}>Relative-Value Setups</h2>
-            <p className={styles.sideHelp}>Pair structures synthesized from strongest positive and negative reactions.</p>
+            <h2 className={styles.sideTitle}>Action queue</h2>
+            <p className={styles.sideHelp}>Execution notes ordered by urgency and confidence.</p>
+            <ul className={styles.sideList}>
+              {(forward?.nextBestActions ?? []).length === 0 ? (
+                <li className={styles.sideItem}>
+                  <p className={styles.sideMeta}>No actions generated. Adjust filters and refresh to recover action guidance.</p>
+                </li>
+              ) : (
+                (forward?.nextBestActions ?? []).slice(0, 5).map((action) => (
+                  <li className={styles.sideItem} key={action.id}>
+                    <p className={styles.sideLabel}>Horizon {action.horizon}</p>
+                    <p className={styles.sideHeadline}>{action.action}</p>
+                    <p className={styles.sideMeta}>{action.rationale}</p>
+                    <span className={`badge ${priorityBadgeClass(action.priority)}`}>{action.priority}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </article>
+
+          <article className={styles.sideCard}>
+            <h2 className={styles.sideTitle}>Pair trades</h2>
+            <p className={styles.sideHelp}>Relative-value structures synthesized from the strongest positive and negative reactions.</p>
             <ul className={styles.sideList}>
               {(forward?.pairIdeas ?? []).length === 0 ? (
                 <li className={styles.sideItem}>
@@ -165,27 +206,6 @@ export function SignalsView({
                     <p className={styles.sideMeta}>{idea.thesis}</p>
                     <p className={styles.sideMeta}>Expected spread {idea.expectedSpreadPct.toFixed(2)}%</p>
                     <span className={`badge ${confidenceBadgeClass(idea.confidenceBand)}`}>{(idea.confidenceScore * 100).toFixed(0)}</span>
-                  </li>
-                ))
-              )}
-            </ul>
-          </article>
-
-          <article className={styles.sideCard}>
-            <h2 className={styles.sideTitle}>Next-Best Actions</h2>
-            <p className={styles.sideHelp}>Execution queue ordered by confidence and urgency.</p>
-            <ul className={styles.sideList}>
-              {(forward?.nextBestActions ?? []).length === 0 ? (
-                <li className={styles.sideItem}>
-                  <p className={styles.sideMeta}>No actions generated. Adjust filters and refresh to recover action guidance.</p>
-                </li>
-              ) : (
-                (forward?.nextBestActions ?? []).slice(0, 5).map((action) => (
-                  <li className={styles.sideItem} key={action.id}>
-                    <p className={styles.sideLabel}>Horizon {action.horizon}</p>
-                    <p className={styles.sideHeadline}>{action.action}</p>
-                    <p className={styles.sideMeta}>{action.rationale}</p>
-                    <span className={`badge ${priorityBadgeClass(action.priority)}`}>{action.priority}</span>
                   </li>
                 ))
               )}

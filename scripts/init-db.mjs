@@ -15,7 +15,7 @@ function resolveDatabasePath(rawUrl) {
     return value;
   }
 
-  return path.resolve(process.cwd(), value);
+  return path.resolve(process.cwd(), "prisma", value);
 }
 
 try {

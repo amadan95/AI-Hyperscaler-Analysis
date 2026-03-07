@@ -1,18 +1,21 @@
 .heroGrid {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.9rem;
 }
 
 .heroCard {
   border: 1px solid var(--line-default);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--surface-base) 94%, transparent),
-    color-mix(in srgb, var(--surface-inset) 86%, transparent)
-  );
-  box-shadow: var(--shadow-soft);
-  padding: 0.95rem;
+  border-radius: 1.65rem;
+  background:
+    linear-gradient(150deg, color-mix(in srgb, var(--surface-panel) 96%, transparent), color-mix(in srgb, var(--surface-inset) 88%, transparent)),
+    radial-gradient(circle at top left, color-mix(in srgb, var(--signal-accent) 14%, transparent), transparent 44%);
+  box-shadow: var(--shadow-hard);
+  padding: 1.1rem;
+  display: grid;
+  gap: 0.92rem;
+}
+
+.heroTopline {
   display: grid;
   gap: 0.72rem;
 }
@@ -21,7 +24,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 0.6rem;
+  gap: 0.72rem;
   align-items: start;
 }
 
@@ -29,41 +32,132 @@
   margin: 0;
   font-size: 0.64rem;
   color: var(--ink-tertiary);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 800;
 }
 
 .heroTitle {
-  margin: 0.3rem 0 0;
-  font-size: clamp(1.24rem, 2.2vw, 1.82rem);
-  line-height: 1.1;
+  margin: 0.34rem 0 0;
+  max-width: 12ch;
+  font-size: clamp(1.72rem, 4vw, 2.9rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
 }
 
 .heroEdge {
-  margin: 0.08rem 0 0;
-  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+  margin: 0.2rem 0 0;
   color: var(--ink-secondary);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
+  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.42rem;
+}
+
+.directionBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.18rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.directionLong {
+  border-color: color-mix(in srgb, var(--signal-positive) 40%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 90%, var(--ink-primary) 10%);
+}
+
+.directionShort {
+  border-color: color-mix(in srgb, var(--signal-negative) 40%, transparent);
+  background: color-mix(in srgb, var(--signal-negative) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 90%, var(--ink-primary) 10%);
 }
 
 .heroRationale {
   margin: 0;
   color: var(--ink-secondary);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
   max-width: 72ch;
+}
+
+.confidenceWrap {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.confidenceMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.confidenceLabel {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.confidenceValue {
+  color: var(--ink-primary);
+  font-size: 0.76rem;
+  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+}
+
+.confidenceTrack {
+  position: relative;
+  width: 100%;
+  height: 0.6rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface-muted) 58%, transparent);
+}
+
+.confidenceFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--signal-accent) 82%, transparent), var(--signal-accent-strong));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--signal-accent) 32%, transparent);
+}
+
+.confidenceHigh {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--signal-positive) 88%, transparent), color-mix(in srgb, var(--signal-accent) 72%, transparent));
+}
+
+.confidenceMedium {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--signal-warning) 82%, transparent), color-mix(in srgb, var(--signal-accent) 62%, transparent));
+}
+
+.confidenceLow {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--signal-negative) 76%, transparent), color-mix(in srgb, var(--signal-warning) 52%, transparent));
 }
 
 .heroStats {
   display: grid;
-  gap: 0.56rem;
+  gap: 0.62rem;
 }
 
 .heroStat {
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: var(--surface-inset);
-  padding: 0.6rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-inset) 88%, transparent);
+  padding: 0.74rem;
   display: grid;
   gap: 0.18rem;
 }
@@ -71,81 +165,82 @@
 .heroStatLabel {
   margin: 0;
   color: var(--ink-tertiary);
-  font-size: 0.64rem;
-  letter-spacing: 0.1em;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 800;
 }
 
 .heroStatValue {
   margin: 0;
-  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .deltaRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.34rem;
+  gap: 0.38rem;
 }
 
 .deltaChip {
   border-radius: 999px;
   border: 1px solid var(--line-default);
-  padding: 0.14rem 0.48rem;
+  padding: 0.18rem 0.54rem;
   font-size: 0.68rem;
   font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
 }
 
 .deltaPositive {
-  border-color: color-mix(in srgb, var(--signal-positive) 46%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-positive) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 90%, var(--ink-primary) 10%);
 }
 
 .deltaNegative {
-  border-color: color-mix(in srgb, var(--signal-negative) 46%, transparent);
-  background: color-mix(in srgb, var(--signal-negative) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-negative) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-negative) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-negative) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 90%, var(--ink-primary) 10%);
 }
 
 .heroEmpty {
   margin: 0;
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius-sm);
-  background: var(--surface-inset);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-inset) 88%, transparent);
   color: var(--ink-secondary);
-  padding: 0.68rem;
-  font-size: 0.8rem;
+  padding: 0.82rem;
+  font-size: 0.82rem;
 }
 
 .stripGrid {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.72rem;
 }
 
 .stripCard {
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--surface-inset) 92%, transparent);
-  padding: 0.64rem;
   display: grid;
   gap: 0.22rem;
+  padding: 0.82rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1.08rem;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--surface-inset) 88%, transparent), color-mix(in srgb, var(--surface-rail) 92%, transparent));
 }
 
 .stripTitle {
   margin: 0;
   font-size: 0.62rem;
   color: var(--ink-tertiary);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 800;
 }
 
 .stripValue {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.34rem;
   line-height: 1;
 }
 
@@ -153,6 +248,7 @@
   margin: 0;
   font-size: 0.77rem;
   color: var(--ink-secondary);
+  line-height: 1.45;
 }
 
 .regimeBadge {
@@ -161,58 +257,59 @@
   border: 1px solid transparent;
   font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   font-weight: 800;
-  padding: 0.12rem 0.42rem;
+  padding: 0.16rem 0.46rem;
 }
 
 .regimeHigh {
-  border-color: color-mix(in srgb, var(--signal-positive) 42%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 80%, var(--ink-primary) 20%);
+  border-color: color-mix(in srgb, var(--signal-positive) 40%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 90%, var(--ink-primary) 10%);
 }
 
 .regimeMedium {
-  border-color: color-mix(in srgb, var(--signal-warning) 42%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 80%, var(--ink-primary) 20%);
+  border-color: color-mix(in srgb, var(--signal-warning) 40%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 92%, var(--ink-primary) 8%);
 }
 
 .regimeLow {
   border-color: var(--line-default);
-  background: var(--surface-base);
+  background: color-mix(in srgb, var(--surface-muted) 60%, transparent);
   color: var(--ink-secondary);
 }
 
 .bodyGrid {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.9rem;
 }
 
 .sideRail {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.9rem;
 }
 
 .sideCard {
   border: 1px solid var(--line-default);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-base) 92%, transparent);
+  border-radius: 1.35rem;
+  background: color-mix(in srgb, var(--surface-panel) 92%, transparent);
   box-shadow: var(--shadow-soft);
-  padding: 0.78rem;
+  padding: 0.88rem;
   display: grid;
-  gap: 0.56rem;
+  gap: 0.62rem;
 }
 
 .sideTitle {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .sideHelp {
   margin: 0;
   color: var(--ink-secondary);
-  font-size: 0.77rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 .sideList {
@@ -220,16 +317,16 @@
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.52rem;
 }
 
 .sideItem {
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: var(--surface-inset);
-  padding: 0.54rem;
   display: grid;
-  gap: 0.24rem;
+  gap: 0.26rem;
+  padding: 0.68rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-inset) 86%, transparent);
 }
 
 .sideLabel {
@@ -237,54 +334,111 @@
   color: var(--ink-tertiary);
   font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   font-weight: 800;
 }
 
 .sideHeadline {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
+  line-height: 1.45;
 }
 
 .sideMeta {
   margin: 0;
   color: var(--ink-secondary);
   font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.tableLead {
+  margin: 0.16rem 0 0;
+  color: var(--ink-secondary);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.tableTone {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.confidenceCell {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 110px;
+}
+
+.confidenceTrackSmall {
+  position: relative;
+  height: 0.4rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface-muted) 58%, transparent);
+}
+
+.confidenceFillSmall {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
 }
 
 .glossaryCard {
   border: 1px solid var(--line-default);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-base) 92%, transparent);
+  border-radius: 1.35rem;
+  background: color-mix(in srgb, var(--surface-panel) 92%, transparent);
   box-shadow: var(--shadow-soft);
-  padding: 0.78rem;
+  padding: 0.92rem;
   display: grid;
-  gap: 0.6rem;
+  gap: 0.56rem;
 }
 
 .glossaryTitle {
   margin: 0;
-  font-size: 0.98rem;
+  font-size: 1rem;
 }
 
-.glossaryGrid {
+.glossaryLead {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.glossaryList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: grid;
   gap: 0.5rem;
 }
 
-.glossaryTerm {
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: var(--surface-inset);
-  padding: 0.54rem;
+.glossaryItem {
   display: grid;
-  gap: 0.16rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.64rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.glossaryIndex {
+  width: 1.5rem;
+  color: var(--signal-accent);
+  font-size: 0.7rem;
+  font-family: var(--font-ibm-plex-mono), "SFMono-Regular", Consolas, monospace;
+}
+
+.glossaryBody {
+  display: grid;
+  gap: 0.12rem;
 }
 
 .glossaryName {
   margin: 0;
   font-size: 0.62rem;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-weight: 800;
@@ -294,6 +448,7 @@
   margin: 0;
   color: var(--ink-secondary);
   font-size: 0.77rem;
+  line-height: 1.5;
 }
 
 @media (min-width: 860px) {
@@ -304,20 +459,16 @@
   .stripGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .glossaryGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
-@media (min-width: 1140px) {
+@media (min-width: 1180px) {
   .heroGrid {
-    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.78fr);
+    grid-template-columns: minmax(0, 1.45fr) 320px;
     align-items: start;
   }
 
   .bodyGrid {
-    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.78fr);
+    grid-template-columns: minmax(0, 1fr) 320px;
     align-items: start;
   }
 }

@@ -6,119 +6,90 @@
 
 .skipLink {
   position: absolute;
-  top: 1rem;
+  top: 0.8rem;
   left: 1rem;
   z-index: 400;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong);
   background: var(--surface-raised);
   color: var(--ink-primary);
-  padding: 0.56rem 0.74rem;
+  padding: 0.55rem 0.76rem;
   text-decoration: none;
   transform: translateY(-180%);
-  transition: transform 120ms ease;
+  transition: transform 140ms ease;
 }
 
 .skipLink:focus-visible {
-  transform: translateY(0%);
+  transform: translateY(0);
 }
 
 .app {
   margin: 0 auto;
-  max-width: 1420px;
-  padding: 1.2rem;
+  max-width: 1500px;
+  padding: 1rem;
+}
+
+.content {
+  min-width: 0;
   display: grid;
   gap: 1rem;
 }
 
-.commandBar {
-  position: sticky;
-  top: 0.66rem;
-  z-index: 120;
-  border: 1px solid var(--line-default);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shadow-soft);
-  padding: 1rem;
+.controlMatrix {
   display: grid;
-  gap: 0.85rem;
+  gap: 0.78rem;
 }
 
-.commandHeader {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.85rem;
-  align-items: start;
+.controlBand {
+  display: grid;
+  gap: 0.72rem;
+  padding: 0.86rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1.08rem;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--surface-inset) 90%, transparent), color-mix(in srgb, var(--surface-base) 88%, transparent));
 }
 
-.commandTitle {
+.controlBandWide {
+  grid-column: 1 / -1;
+}
+
+.bandHeader {
+  display: grid;
+  gap: 0.16rem;
+}
+
+.bandTitle {
   margin: 0;
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
-  font-weight: 650;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-
-.commandSubtext {
-  margin: 0.36rem 0 0;
-  color: var(--ink-secondary);
-  font-size: 0.84rem;
-  max-width: 74ch;
-}
-
-.commandMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.unsaved,
-.status {
-  border-radius: 999px;
-  font-size: 0.64rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.72rem;
   font-weight: 800;
-  padding: 0.22rem 0.54rem;
-  border: 1px solid transparent;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-primary);
 }
 
-.unsaved {
-  border-color: color-mix(in srgb, var(--signal-warning) 50%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 80%, var(--ink-primary) 20%);
+.bandNote {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+  line-height: 1.45;
 }
 
-.status {
-  border-color: color-mix(in srgb, var(--signal-positive) 50%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 82%, var(--ink-primary) 18%);
-}
-
-.statusBusy {
-  border-color: color-mix(in srgb, var(--signal-warning) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-warning) 84%, var(--ink-primary) 16%);
-}
-
-.controlGrid {
+.dualFields {
   display: grid;
-  gap: 0.68rem;
+  gap: 0.72rem;
 }
 
 .field {
   display: grid;
-  gap: 0.3rem;
+  gap: 0.32rem;
   align-content: start;
 }
 
 .fieldLabel {
   color: var(--ink-tertiary);
-  font-size: 0.66rem;
-  letter-spacing: 0.11em;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 800;
 }
@@ -130,22 +101,22 @@
 .chip,
 .button,
 .pageButton,
-.navLink,
 .sectionLink {
   touch-action: manipulation;
-  -webkit-tap-highlight-color: color-mix(in srgb, var(--signal-accent) 24%, transparent);
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--signal-accent) 20%, transparent);
 }
 
 .input,
 .select {
   width: 100%;
+  min-height: 2.8rem;
   border: 1px solid var(--control-border);
-  border-radius: var(--radius-sm);
+  border-radius: 0.9rem;
   background: var(--control-bg);
   color: var(--ink-primary);
   font-size: 0.88rem;
-  padding: 0.54rem 0.62rem;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  padding: 0.72rem 0.8rem;
+  transition: border-color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
 }
 
 .input:hover,
@@ -158,7 +129,6 @@
 .button:focus-visible,
 .segmentedButton:focus-visible,
 .chip:focus-visible,
-.navLink:focus-visible,
 .sectionLink:focus-visible,
 .pageButton:focus-visible {
   outline: 2px solid var(--line-focus);
@@ -170,6 +140,10 @@
   accent-color: var(--signal-accent);
 }
 
+.rangeValue {
+  font-size: 0.75rem;
+}
+
 .smallHelp {
   margin: 0;
   color: var(--ink-secondary);
@@ -179,170 +153,148 @@
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.35rem;
+  gap: 0.38rem;
 }
 
 .segmentedButton {
+  min-height: 2.4rem;
   border: 1px solid var(--control-border);
-  border-radius: 0.7rem;
+  border-radius: 0.82rem;
   background: var(--control-bg);
   color: var(--ink-secondary);
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 0.42rem 0.45rem;
-  transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
+  padding: 0.45rem;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.segmentedButton:hover {
+  transform: translateY(-1px);
 }
 
 .segmentedButtonActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 82%, var(--ink-primary) 18%);
+  border-color: color-mix(in srgb, var(--signal-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 11%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 88%, var(--ink-primary) 12%);
 }
 
 .chipGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.42rem;
 }
 
 .chip {
+  min-height: 2rem;
   border: 1px solid var(--control-border);
   border-radius: 999px;
   background: var(--control-bg);
   color: var(--ink-secondary);
   font-size: 0.74rem;
-  font-weight: 600;
-  padding: 0.3rem 0.62rem;
+  font-weight: 700;
+  padding: 0.3rem 0.72rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
+  gap: 0.32rem;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
 }
 
 .chipActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 16%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 86%, var(--ink-primary) 14%);
+  border-color: color-mix(in srgb, var(--signal-accent) 44%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-accent-strong) 88%, var(--ink-primary) 12%);
+}
+
+.appliedSummary {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.77rem;
+  line-height: 1.45;
 }
 
 .actionRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.48rem;
 }
 
 .button {
+  min-height: 2.5rem;
   border: 1px solid transparent;
-  border-radius: 0.74rem;
+  border-radius: 999px;
   background: transparent;
   color: var(--ink-primary);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 0.48rem 0.72rem;
-  transition: transform 100ms ease, border-color 120ms ease, background-color 120ms ease;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.54rem 0.88rem;
+  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease, color 140ms ease;
 }
 
 .button:hover {
   transform: translateY(-1px);
 }
 
+.button:disabled,
+.pageButton:disabled {
+  opacity: 0.56;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .buttonPrimary {
-  border-color: color-mix(in srgb, var(--signal-accent) 56%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 86%, var(--ink-primary) 14%);
+  border-color: color-mix(in srgb, var(--signal-accent) 54%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--signal-accent) 18%, transparent), color-mix(in srgb, var(--surface-raised) 90%, transparent));
+  color: color-mix(in srgb, var(--signal-accent-strong) 92%, var(--ink-primary) 8%);
 }
 
 .buttonQuiet {
   border-color: var(--line-default);
-  background: var(--surface-inset);
+  background: color-mix(in srgb, var(--surface-muted) 58%, transparent);
   color: var(--ink-secondary);
 }
 
 .buttonAccent {
-  border-color: color-mix(in srgb, var(--signal-positive) 56%, transparent);
-  background: color-mix(in srgb, var(--signal-positive) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-positive) 84%, var(--ink-primary) 16%);
-}
-
-.mainLayout {
-  display: grid;
-  gap: 0.95rem;
-}
-
-.nav {
-  border: 1px solid var(--line-default);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-base) 90%, transparent);
-  backdrop-filter: blur(10px);
-  padding: 0.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.42rem;
-  align-items: center;
-  box-shadow: var(--shadow-soft);
-}
-
-.navTitle {
-  width: 100%;
-  margin: 0;
-  font-size: 0.66rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  font-weight: 800;
-}
-
-.navLink {
-  border: 1px solid var(--line-soft);
-  border-radius: 0.72rem;
-  background: var(--surface-inset);
-  color: var(--ink-secondary);
-  text-decoration: none;
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 0.42rem 0.6rem;
-  white-space: nowrap;
-}
-
-.navLinkActive {
-  border-color: color-mix(in srgb, var(--signal-accent) 54%, transparent);
-  background: color-mix(in srgb, var(--signal-accent) 16%, transparent);
-  color: color-mix(in srgb, var(--signal-accent-strong) 86%, var(--ink-primary) 14%);
-}
-
-.content {
-  min-width: 0;
-  display: grid;
-  gap: 0.95rem;
+  border-color: color-mix(in srgb, var(--signal-positive) 52%, transparent);
+  background: color-mix(in srgb, var(--signal-positive) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-positive) 90%, var(--ink-primary) 10%);
 }
 
 .sectionNav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.36rem;
-  border-bottom: 1px solid var(--line-soft);
-  padding-bottom: 0.44rem;
+  gap: 0.42rem;
 }
 
 .sectionLink {
+  min-height: 1.9rem;
   border: 1px solid var(--line-soft);
-  border-radius: 0.66rem;
-  background: color-mix(in srgb, var(--surface-inset) 90%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-inset) 78%, transparent);
   color: var(--ink-secondary);
   text-decoration: none;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 0.28rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.58rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .panel {
   border: 1px solid var(--line-default);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-base) 90%, transparent);
-  backdrop-filter: blur(10px);
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--surface-panel) 95%, transparent), color-mix(in srgb, var(--surface-inset) 88%, transparent));
   box-shadow: var(--shadow-soft);
-  padding: 0.9rem;
+  backdrop-filter: blur(12px);
+  padding: 1rem;
 }
 
 .anchorTarget {
@@ -353,22 +305,23 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 0.64rem;
+  gap: 0.7rem;
   align-items: start;
 }
 
 .title {
   margin: 0;
-  font-size: clamp(0.98rem, 1.5vw, 1.1rem);
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+  font-size: clamp(1.02rem, 1.6vw, 1.24rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
 }
 
 .subtitle {
-  margin: 0.24rem 0 0;
+  margin: 0.28rem 0 0;
   color: var(--ink-secondary);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
   max-width: 72ch;
 }
 
@@ -376,49 +329,49 @@
 .grid3,
 .grid4 {
   display: grid;
-  gap: 0.74rem;
+  gap: 0.8rem;
 }
 
 .metricCard {
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-md);
-  background: var(--surface-inset);
-  padding: 0.68rem;
+  background: color-mix(in srgb, var(--surface-inset) 84%, transparent);
+  padding: 0.8rem;
   display: grid;
-  gap: 0.2rem;
+  gap: 0.24rem;
 }
 
 .metricLabel {
   margin: 0;
   color: var(--ink-tertiary);
-  font-size: 0.64rem;
-  letter-spacing: 0.11em;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 800;
 }
 
 .metricValue {
-  margin: 0.2rem 0;
-  font-size: 1.26rem;
-  line-height: 1.1;
+  margin: 0.22rem 0;
+  font-size: 1.34rem;
+  line-height: 1.05;
 }
 
 .metricNote {
   margin: 0;
   color: var(--ink-secondary);
-  font-size: 0.77rem;
+  font-size: 0.78rem;
 }
 
 .legendSwatch {
-  width: 0.7rem;
+  width: 0.82rem;
   height: 0.14rem;
   border-radius: 999px;
 }
 
 .tableWrap {
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+  border-radius: 1.15rem;
+  background: color-mix(in srgb, var(--surface-raised) 94%, transparent);
   overflow: auto;
   overscroll-behavior: contain;
 }
@@ -437,62 +390,77 @@
 }
 
 .tableHead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   color: var(--ink-tertiary);
   font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 800;
-  background: color-mix(in srgb, var(--surface-inset) 92%, transparent);
+  background: color-mix(in srgb, var(--surface-panel) 96%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--surface-muted) 22%, transparent);
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--signal-accent) 7%, transparent);
 }
 
 .densityCozy .table th,
 .densityCozy .table td {
-  padding: 0.56rem;
+  padding: 0.62rem 0.68rem;
 }
 
 .densityCompact .table th,
 .densityCompact .table td {
-  padding: 0.36rem 0.44rem;
-  font-size: 0.78rem;
+  padding: 0.42rem 0.48rem;
+  font-size: 0.77rem;
 }
 
 .empty,
 .alert {
-  border-radius: var(--radius-sm);
-  padding: 0.58rem;
-  margin: 0.42rem;
+  border-radius: 0.95rem;
+  padding: 0.7rem 0.78rem;
+  margin: 0.45rem;
   font-size: 0.8rem;
 }
 
 .empty {
   border: 1px solid var(--line-soft);
-  background: var(--surface-inset);
+  background: color-mix(in srgb, var(--surface-inset) 84%, transparent);
   color: var(--ink-secondary);
 }
 
 .alert {
-  border: 1px solid color-mix(in srgb, var(--signal-negative) 52%, transparent);
-  background: color-mix(in srgb, var(--signal-negative) 14%, transparent);
-  color: color-mix(in srgb, var(--signal-negative) 82%, var(--ink-primary) 18%);
+  border: 1px solid color-mix(in srgb, var(--signal-negative) 42%, transparent);
+  background: color-mix(in srgb, var(--signal-negative) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-negative) 92%, var(--ink-primary) 8%);
 }
 
 .pagination {
-  margin-top: 0.58rem;
+  margin-top: 0.68rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.52rem;
+  gap: 0.56rem;
   flex-wrap: wrap;
 }
 
 .pageButton {
+  min-height: 2.2rem;
   border: 1px solid var(--line-default);
-  border-radius: 0.68rem;
-  background: var(--surface-inset);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-muted) 58%, transparent);
   color: var(--ink-secondary);
-  font-size: 0.76rem;
-  font-weight: 700;
-  padding: 0.34rem 0.56rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.34rem 0.72rem;
 }
 
 .pageInfo {
@@ -513,14 +481,14 @@
 
 .reveal {
   opacity: 0;
-  transform: translateY(8px);
-  animation: fade-up 360ms ease forwards;
+  transform: translateY(10px);
+  animation: fade-up 380ms ease forwards;
 }
 
 .revealDelayed {
   opacity: 0;
-  transform: translateY(8px);
-  animation: fade-up 420ms ease 80ms forwards;
+  transform: translateY(10px);
+  animation: fade-up 440ms ease 90ms forwards;
 }
 
 @keyframes fade-up {
@@ -531,8 +499,12 @@
 }
 
 @media (min-width: 860px) {
-  .controlGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .controlMatrix {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dualFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .grid2 {
@@ -548,28 +520,16 @@
   }
 }
 
-@media (min-width: 1120px) {
-  .mainLayout {
-    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
-    align-items: start;
-  }
-
-  .nav {
-    position: sticky;
-    top: 6.1rem;
-    display: grid;
-    align-content: start;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .skipLink,
   .button,
+  .chip,
+  .segmentedButton,
   .reveal,
   .revealDelayed {
     transition: none !important;
     animation: none !important;
-    opacity: 1;
-    transform: none;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }

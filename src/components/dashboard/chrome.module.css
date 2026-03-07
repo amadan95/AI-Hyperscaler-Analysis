@@ -1,0 +1,373 @@
+.frame {
+  display: grid;
+  gap: 1rem;
+}
+
+.layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.masthead {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid var(--line-default);
+  border-radius: 1.7rem;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--surface-panel) 95%, transparent), color-mix(in srgb, var(--surface-rail) 84%, transparent)),
+    radial-gradient(circle at top left, color-mix(in srgb, var(--signal-accent) 18%, transparent), transparent 45%);
+  box-shadow: var(--shadow-hard);
+  backdrop-filter: blur(18px);
+}
+
+.mastheadCopy {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--ink-tertiary);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  max-width: 12ch;
+  font-size: clamp(2rem, 5vw, 3.85rem);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+}
+
+.description {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--ink-secondary);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.statusStack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.alertPill,
+.statePill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.alertPill {
+  border-color: color-mix(in srgb, var(--signal-warning) 48%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 14%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 88%, var(--ink-primary) 12%);
+}
+
+.statePill {
+  border-color: color-mix(in srgb, var(--signal-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--signal-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--signal-accent) 88%, var(--ink-primary) 12%);
+}
+
+.statePillBusy {
+  border-color: color-mix(in srgb, var(--signal-warning) 46%, transparent);
+  background: color-mix(in srgb, var(--signal-warning) 10%, transparent);
+  color: color-mix(in srgb, var(--signal-warning) 88%, var(--ink-primary) 12%);
+}
+
+.utilityButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 2rem;
+  padding: 0.3rem 0.72rem;
+  border: 1px solid var(--line-default);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+  color: var(--ink-primary);
+  font-size: 0.76rem;
+  font-weight: 700;
+  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease;
+}
+
+.utilityButton:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+}
+
+.utilityIcon {
+  width: 0.92rem;
+  height: 0.92rem;
+}
+
+.utilitySpin {
+  animation: chrome-spin 900ms linear infinite;
+}
+
+.summaryGrid {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.summaryCard {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.72rem 0.78rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-inset) 88%, transparent);
+}
+
+.summaryLabel {
+  color: var(--ink-muted);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  margin: 0;
+  color: var(--ink-primary);
+  font-size: 0.87rem;
+  line-height: 1.45;
+}
+
+.routeColumn {
+  min-width: 0;
+}
+
+.stage {
+  min-width: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.stageContent {
+  min-width: 0;
+}
+
+.routeRail,
+.filterDock {
+  border: 1px solid var(--line-default);
+  border-radius: 1.45rem;
+  background: color-mix(in srgb, var(--surface-panel) 92%, transparent);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(16px);
+}
+
+.routeRail {
+  display: grid;
+  gap: 0.9rem;
+  padding: 0.9rem;
+}
+
+.routeIntro {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.routeTitle,
+.filterTitle {
+  margin: 0;
+  font-size: 1.02rem;
+  letter-spacing: -0.02em;
+}
+
+.routeDescription,
+.filterDescription {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.79rem;
+  line-height: 1.45;
+}
+
+.routeList {
+  display: grid;
+  gap: 0.46rem;
+}
+
+.routeLink {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.72rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-inset) 86%, transparent);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.routeLink:hover {
+  transform: translateX(2px);
+  border-color: var(--line-strong);
+}
+
+.routeLinkActive {
+  border-color: color-mix(in srgb, var(--signal-accent) 44%, transparent);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--signal-accent) 12%, transparent), color-mix(in srgb, var(--surface-panel) 94%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--signal-accent) 18%, transparent);
+}
+
+.routeIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--surface-raised) 90%, transparent);
+}
+
+.routeIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.routeText {
+  display: grid;
+  gap: 0.08rem;
+}
+
+.routeLabel {
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.routeNote {
+  color: var(--ink-secondary);
+  font-size: 0.74rem;
+}
+
+.filterDock {
+  display: grid;
+  gap: 0.92rem;
+  padding: 0.95rem;
+}
+
+.filterIntro {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.filterActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filterBody {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.filterFooter {
+  color: var(--ink-secondary);
+  font-size: 0.77rem;
+}
+
+@keyframes chrome-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 860px) {
+  .summaryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filterIntro {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+}
+
+@media (min-width: 1180px) {
+  .layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .routeColumn {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+@media (max-width: 1179px) {
+  .routeList {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 859px) {
+  .masthead,
+  .routeRail,
+  .filterDock {
+    padding: 0.9rem;
+  }
+
+  .title {
+    max-width: 100%;
+  }
+
+  .routeRail {
+    position: sticky;
+    top: 0.5rem;
+    z-index: 110;
+  }
+
+  .routeIntro {
+    gap: 0.12rem;
+  }
+
+  .routeDescription {
+    display: none;
+  }
+
+  .routeList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .routeLink {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    padding: 0.6rem 0.4rem;
+  }
+
+  .routeNote {
+    display: none;
+  }
+
+  .filterActions {
+    width: 100%;
+  }
+}

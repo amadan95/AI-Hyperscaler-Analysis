@@ -3,7 +3,6 @@
 import {
   CartesianGrid,
   ComposedChart,
-  Legend,
   Line,
   ReferenceLine,
   ResponsiveContainer,
@@ -33,8 +32,7 @@ import {
   summarizeChart,
 } from "@/components/dashboard/utils";
 
-const LINE_COLORS = ["#0f6ad7", "#e07a1f", "#18794e", "#9b2c2c", "#5b6aa8", "#865a2f", "#9a3c73", "#1b8f8f"];
-const LINE_PATTERNS = ["0", "6 4", "2 4", "10 4", "4 2", "12 4 2 4", "8 2", "3 3"];
+const LINE_PATTERNS = ["0", "6 4", "2 5", "10 5", "4 2", "12 4 2 4", "8 2", "3 3"];
 
 type ContextViewProps = {
   isMounted: boolean;
@@ -103,6 +101,8 @@ export function ContextView({
   const chartSummary = summarizeChart(pricesState.data?.points ?? [], visibleTickers);
   const whyNow = composeWhyNowNarrative(forwardState.data, filters, focusLab, focusTicker);
 
+  const lineColors = ["#5bd8ff", "#f0b16a", "#78d8b2", "#ff94a5", "#9fb4ff", "#e9d77a", "#caa2ff", "#7fe6d1"];
+
   return (
     <>
       <nav className={shared.sectionNav} aria-label="Context sections">
@@ -112,62 +112,69 @@ export function ContextView({
       </nav>
 
       <section id="context-tape" className={`${shared.anchorTarget} ${styles.chartPanel} ${shared.reveal}`}>
-        <div className={shared.panelHeader}>
+        <div className={styles.chartHeaderRow}>
           <div>
             <h2 className={shared.title}>Market Tape With Catalyst Overlays</h2>
-            <p className={shared.subtitle}>Price context first: read trend summary, then inspect series overlays and release markers.</p>
+            <p className={shared.subtitle}>Price context first. Read the tape, then inspect release cadence and event markers inside the same frame.</p>
           </div>
-          <p className={shared.smallHelp}>{eventLines.length} release markers</p>
+          <div className={styles.chartMeta}>
+            <span className={styles.releaseBadge}>{eventLines.length} release markers</span>
+          </div>
         </div>
 
         <p className={styles.chartLead}>{chartSummary}</p>
 
-        <div className={styles.focusRow}>
-          <label className={styles.focusField}>
-            <span className={styles.focusLabel}>Focus Lab</span>
-            <select
-              className={styles.focusSelect}
-              value={focusLab ?? ""}
-              onChange={(event) => onFocusLabChange(event.target.value || undefined)}
-            >
-              <option value="">All labs</option>
-              {LABS.map((lab) => (
-                <option key={lab.id} value={lab.id}>{lab.name}</option>
-              ))}
-            </select>
-          </label>
-
-          <label className={styles.focusField}>
-            <span className={styles.focusLabel}>Focus Ticker</span>
-            <select
-              className={styles.focusSelect}
-              value={focusTicker ?? ""}
-              onChange={(event) => onFocusTickerChange(event.target.value || undefined)}
-            >
-              <option value="">All tickers</option>
-              {HYPERSCALER_TICKERS.map((ticker) => (
-                <option key={ticker.ticker} value={ticker.ticker}>{displayTicker(ticker.ticker)}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className={styles.legendRow} role="group" aria-label="Toggle chart series">
-          {selectedTickers.map((ticker, index) => {
-            const active = visibleTickers.includes(ticker);
-            return (
-              <button
-                key={ticker}
-                type="button"
-                className={clsx(styles.legendChip, active && styles.legendChipActive)}
-                onClick={() => onToggleTicker(ticker)}
-                aria-pressed={active}
+        <div className={styles.chartToolbar}>
+          <div className={styles.focusRow}>
+            <label className={styles.focusField}>
+              <span className={styles.focusLabel}>Focus Lab</span>
+              <select
+                className={styles.focusSelect}
+                value={focusLab ?? ""}
+                onChange={(event) => onFocusLabChange(event.target.value || undefined)}
               >
-                <span className={styles.legendSwatch} style={{ background: LINE_COLORS[index % LINE_COLORS.length] }} />
-                {displayTicker(ticker)}
-              </button>
-            );
-          })}
+                <option value="">All labs</option>
+                {LABS.map((lab) => (
+                  <option key={lab.id} value={lab.id}>{lab.name}</option>
+                ))}
+              </select>
+            </label>
+
+            <label className={styles.focusField}>
+              <span className={styles.focusLabel}>Focus Ticker</span>
+              <select
+                className={styles.focusSelect}
+                value={focusTicker ?? ""}
+                onChange={(event) => onFocusTickerChange(event.target.value || undefined)}
+              >
+                <option value="">All tickers</option>
+                {HYPERSCALER_TICKERS.map((ticker) => (
+                  <option key={ticker.ticker} value={ticker.ticker}>{displayTicker(ticker.ticker)}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className={styles.legendBlock}>
+            <p className={styles.legendLabel}>Visible series</p>
+            <div className={styles.legendRow} role="group" aria-label="Toggle chart series">
+              {selectedTickers.map((ticker, index) => {
+                const active = visibleTickers.includes(ticker);
+                return (
+                  <button
+                    key={ticker}
+                    type="button"
+                    className={clsx(styles.legendChip, active && styles.legendChipActive)}
+                    onClick={() => onToggleTicker(ticker)}
+                    aria-pressed={active}
+                  >
+                    <span className={styles.legendSwatch} style={{ background: lineColors[index % lineColors.length] }} />
+                    {displayTicker(ticker)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {focusTicker && !focusTickerInChart && (
@@ -194,23 +201,22 @@ export function ContextView({
                 <YAxis stroke="var(--plot-grid)" tick={{ fill: "var(--plot-axis)", fontSize: 12 }} />
                 <Tooltip
                   contentStyle={{
-                    background: "var(--surface-raised)",
+                    background: "var(--surface-panel)",
                     borderColor: "var(--line-strong)",
-                    borderRadius: "0.75rem",
+                    borderRadius: "1rem",
                     color: "var(--ink-primary)",
                   }}
                   labelStyle={{ color: "var(--ink-secondary)" }}
                 />
-                <Legend wrapperStyle={{ color: "var(--ink-secondary)", fontSize: "12px" }} />
                 {visibleTickers.map((ticker, index) => (
                   <Line
                     key={ticker}
                     type="monotone"
                     dataKey={ticker}
                     name={displayTicker(ticker)}
-                    stroke={LINE_COLORS[index % LINE_COLORS.length]}
+                    stroke={lineColors[index % lineColors.length]}
                     strokeDasharray={LINE_PATTERNS[index % LINE_PATTERNS.length]}
-                    strokeWidth={2}
+                    strokeWidth={2.2}
                     dot={false}
                   />
                 ))}
@@ -219,7 +225,8 @@ export function ContextView({
                     key={event.id}
                     x={event.effectiveTradingDate?.slice(0, 10)}
                     stroke={event.sourceTier === "official" ? "var(--signal-accent)" : "var(--signal-fallback)"}
-                    strokeOpacity={0.32}
+                    strokeOpacity={0.45}
+                    strokeDasharray="4 6"
                   />
                 ))}
               </ComposedChart>
@@ -252,11 +259,12 @@ export function ContextView({
           <CatalystTimeline events={scopedEvents} focusLab={focusLab} window={window} onWindowChange={onWindowChange} />
         </section>
 
-        <section id="context-composition" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
+        <aside id="context-composition" className={`${shared.anchorTarget} ${styles.notePanel} ${shared.revealDelayed}`}>
+          <p className={styles.noteEyebrow}>Intelligence note</p>
           <div className={shared.panelHeader}>
             <div>
-              <h2 className={shared.title}>Event Composition And Narrative</h2>
-              <p className={shared.subtitle}>Source mix, lab concentration, and what changed enough to matter now.</p>
+              <h2 className={shared.title}>Event composition and narrative</h2>
+              <p className={styles.noteLead}>Source mix, lab concentration, and what changed enough to matter now.</p>
             </div>
           </div>
 
@@ -291,7 +299,7 @@ export function ContextView({
           </div>
 
           <p className={styles.narrativeCallout}>{whyNow}</p>
-        </section>
+        </aside>
       </div>
     </>
   );

@@ -76,7 +76,7 @@ export function CatalystTimeline({ events, window, onWindowChange, focusLab }: C
     <>
       <div className={styles.timelineControlRow}>
         <p className={styles.chartLead}>
-          Grouped catalysts by {window === "1d" ? "day" : window === "1w" ? "week" : "month"} for rapid release-cluster review.
+          Grouped by {window === "1d" ? "day" : window === "1w" ? "week" : "month"} to expose clustered release bursts and quieter stretches.
         </p>
         <div className={styles.timelineWindowButtons} role="group" aria-label="Timeline window">
           {(["1d", "1w", "1m"] as const).map((option) => {
@@ -108,9 +108,12 @@ export function CatalystTimeline({ events, window, onWindowChange, focusLab }: C
               <ul className={styles.timelineList}>
                 {bucket.events.map((event) => (
                   <li className={styles.timelineEvent} key={event.id}>
-                    <p className={styles.timelineEventMeta}>
-                      {event.lab.name} · {formatDateTime(event.publishedAt)} · confidence {event.confidence.toFixed(2)}
-                    </p>
+                    <div className={styles.timelineMetaRow}>
+                      <p className={styles.timelineEventMeta}>
+                        {event.lab.name} · {formatDateTime(event.publishedAt)} · confidence {event.confidence.toFixed(2)}
+                      </p>
+                      <span className={`badge ${event.sourceTier === "official" ? "badge-official" : "badge-fallback"}`}>{event.sourceTier}</span>
+                    </div>
                     <p className={styles.timelineEventTitle}>
                       <a href={event.url} target="_blank" rel="noreferrer" className={styles.timelineLink}>
                         {event.title}

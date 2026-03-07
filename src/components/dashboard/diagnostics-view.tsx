@@ -84,243 +84,258 @@ export function DiagnosticsView({
         <a className={shared.sectionLink} href="#diag-events" onClick={() => onSetPanel("events")}>Raw Event Feed</a>
       </nav>
 
-      <section id="diag-event-study" className={`${shared.anchorTarget} ${shared.panel} ${shared.reveal}`}>
-        <div className={shared.panelHeader}>
-          <div>
-            <h2 className={shared.title}>Event Study Table</h2>
-            <p className={shared.subtitle}>Default sort is strongest CAR. CAR = cumulative abnormal return against benchmark expectation.</p>
-          </div>
-          <p className={shared.smallHelp}>{sortedImpacts.length} impacts available</p>
-        </div>
-
-        {impactsState.error && (
-          <div className={shared.alert} role="alert">
-            {impactsState.error}
-            <div className={shared.actionRow}>
-              <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryImpacts}>Retry Event Study</button>
-            </div>
-          </div>
-        )}
-
-        <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
-          <table className={shared.table}>
-            <caption className="sr-only">Event-study impacts</caption>
-            <thead className={shared.tableHead}>
-              <tr>
-                <th scope="col">Lab</th>
-                <th scope="col">Ticker</th>
-                <th scope="col">Window</th>
-                <th scope="col">CAR</th>
-                <th scope="col">P-value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedImpacts.length === 0 ? (
-                <tr>
-                  <td colSpan={5}><p className={shared.empty}>No event-study rows were returned. Expand dates or refresh ingestion before retrying.</p></td>
-                </tr>
-              ) : (
-                sortedImpacts.map((impact) => (
-                  <tr key={impact.id}>
-                    <th scope="row">{impact.event.lab.name}</th>
-                    <td>{displayTicker(impact.ticker)}</td>
-                    <td className={shared.mono}>±{impact.window}d</td>
-                    <td className={shared.mono}>{formatPercent(impact.car)}</td>
-                    <td className={shared.mono}>{impact.pValue.toFixed(3)}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <section className={`${styles.leadStrip} ${shared.reveal}`} aria-label="Diagnostics KPI strip">
+        <article className={styles.leadTile}>
+          <p className={styles.leadLabel}>Healthy sources</p>
+          <p className={styles.leadValue}>{healthySources}/{sourceRows.length || 0}</p>
+          <p className={styles.leadNote}>Connectors with a recent successful run.</p>
+        </article>
+        <article className={styles.leadTile}>
+          <p className={styles.leadLabel}>Failing sources</p>
+          <p className={styles.leadValue}>{failingSources}</p>
+          <p className={styles.leadNote}>Connectors currently carrying a failure marker.</p>
+        </article>
+        <article className={styles.leadTile}>
+          <p className={styles.leadLabel}>Impact rows</p>
+          <p className={styles.leadValue}>{sortedImpacts.length}</p>
+          <p className={styles.leadNote}>Event-study rows in the filtered universe.</p>
+        </article>
+        <article className={styles.leadTile}>
+          <p className={styles.leadLabel}>Correlation pairs</p>
+          <p className={styles.leadValue}>{groupedCorrelations.size}</p>
+          <p className={styles.leadNote}>Lab and ticker combinations with lag diagnostics.</p>
+        </article>
       </section>
 
-      <section id="diag-correlation" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
-        <div className={shared.panelHeader}>
-          <div>
-            <h2 className={shared.title}>Lag-Correlation Matrix</h2>
-            <p className={shared.subtitle}>Color and numeric encoding are paired for non-visual and color-blind-safe interpretation.</p>
+      <div className={styles.diagnosticsGrid}>
+        <section id="diag-event-study" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
+          <div className={shared.panelHeader}>
+            <div>
+              <h2 className={shared.title}>Event study table</h2>
+              <p className={shared.subtitle}>Default sort is strongest CAR, presented in a denser notebook layout for faster comparison.</p>
+            </div>
+            <p className={shared.smallHelp}>{sortedImpacts.length} impacts available</p>
           </div>
-        </div>
 
-        <p className={styles.matrixLegend}>Lag Correlation: relationship between event intensity and returns at lag horizons (0d, 1d, 3d, 7d).</p>
+          {impactsState.error && (
+            <div className={shared.alert} role="alert">
+              {impactsState.error}
+              <div className={shared.actionRow}>
+                <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryImpacts}>Retry Event Study</button>
+              </div>
+            </div>
+          )}
 
-        {correlationsState.error && (
-          <div className={shared.alert} role="alert">
-            {correlationsState.error}
-            <div className={shared.actionRow}>
-              <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryCorrelations}>Retry Correlation Matrix</button>
+          <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
+            <table className={shared.table}>
+              <caption className="sr-only">Event-study impacts</caption>
+              <thead className={shared.tableHead}>
+                <tr>
+                  <th scope="col">Lab</th>
+                  <th scope="col">Ticker</th>
+                  <th scope="col">Window</th>
+                  <th scope="col">CAR</th>
+                  <th scope="col">P-value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedImpacts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5}><p className={shared.empty}>No event-study rows were returned. Expand dates or refresh ingestion before retrying.</p></td>
+                  </tr>
+                ) : (
+                  sortedImpacts.map((impact) => (
+                    <tr key={impact.id}>
+                      <th scope="row">{impact.event.lab.name}</th>
+                      <td>{displayTicker(impact.ticker)}</td>
+                      <td className={shared.mono}>±{impact.window}d</td>
+                      <td className={shared.mono}>{formatPercent(impact.car)}</td>
+                      <td className={shared.mono}>{impact.pValue.toFixed(3)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="diag-correlation" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
+          <div className={shared.panelHeader}>
+            <div>
+              <h2 className={shared.title}>Lag-correlation matrix</h2>
+              <p className={shared.subtitle}>Color and numeric encoding stay paired so the matrix remains legible under dense evidence reading.</p>
             </div>
           </div>
-        )}
 
-        <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
-          <table className={shared.table}>
-            <caption className="sr-only">Lag-correlation matrix</caption>
-            <thead className={shared.tableHead}>
-              <tr>
-                <th scope="col">Lab / Ticker</th>
-                <th scope="col">Lag 0</th>
-                <th scope="col">Lag 1</th>
-                <th scope="col">Lag 3</th>
-                <th scope="col">Lag 7</th>
-              </tr>
-            </thead>
-            <tbody>
-              {groupedCorrelations.size === 0 ? (
+          <p className={styles.matrixLegend}>Lag correlation tracks the relationship between event intensity and returns at 0d, 1d, 3d, and 7d horizons.</p>
+
+          {correlationsState.error && (
+            <div className={shared.alert} role="alert">
+              {correlationsState.error}
+              <div className={shared.actionRow}>
+                <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryCorrelations}>Retry Correlation Matrix</button>
+              </div>
+            </div>
+          )}
+
+          <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
+            <table className={shared.table}>
+              <caption className="sr-only">Lag-correlation matrix</caption>
+              <thead className={shared.tableHead}>
                 <tr>
-                  <td colSpan={5}><p className={shared.empty}>No correlation rows were returned. Verify events and pricing overlap, then retry.</p></td>
+                  <th scope="col">Lab / Ticker</th>
+                  <th scope="col">Lag 0</th>
+                  <th scope="col">Lag 1</th>
+                  <th scope="col">Lag 3</th>
+                  <th scope="col">Lag 7</th>
                 </tr>
-              ) : (
-                Array.from(groupedCorrelations.entries()).map(([key, lagMap]) => (
-                  <tr key={key}>
-                    <th scope="row">{key}</th>
-                    {[0, 1, 3, 7].map((lag) => {
-                      const value = lagMap.get(lag) ?? 0;
-                      return (
-                        <td key={lag} className={`${shared.mono} ${correlationCellClass(value)}`}>
-                          {value.toFixed(3)}
-                        </td>
-                      );
-                    })}
+              </thead>
+              <tbody>
+                {groupedCorrelations.size === 0 ? (
+                  <tr>
+                    <td colSpan={5}><p className={shared.empty}>No correlation rows were returned. Verify events and pricing overlap, then retry.</p></td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="diag-quality" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
-        <div className={shared.panelHeader}>
-          <div>
-            <h2 className={shared.title}>Source Reliability</h2>
-            <p className={shared.subtitle}>Local retry controls isolate failures without blocking event-study and correlation diagnostics.</p>
+                ) : (
+                  Array.from(groupedCorrelations.entries()).map(([key, lagMap]) => (
+                    <tr key={key}>
+                      <th scope="row">{key}</th>
+                      {[0, 1, 3, 7].map((lag) => {
+                        const value = lagMap.get(lag) ?? 0;
+                        return (
+                          <td key={lag} className={`${shared.mono} ${correlationCellClass(value)}`}>
+                            {value.toFixed(3)}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-          <p className={shared.smallHelp}>Latest run: {statusState.data?.latestRun ? `${statusState.data.latestRun.type} (${statusState.data.latestRun.success ? "success" : "failed"})` : "none"}</p>
-        </div>
+        </section>
+      </div>
 
-        {statusState.error && (
-          <div className={shared.alert} role="alert">
-            {statusState.error}
-            <div className={shared.actionRow}>
-              <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryStatus}>Retry Source Reliability</button>
+      <div className={styles.diagnosticsGrid}>
+        <section id="diag-quality" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
+          <div className={shared.panelHeader}>
+            <div>
+              <h2 className={shared.title}>Source reliability</h2>
+              <p className={shared.subtitle}>Connector health stays isolated here so upstream ingestion can be debugged without disrupting the rest of the desk.</p>
+            </div>
+            <p className={shared.smallHelp}>Latest run: {statusState.data?.latestRun ? `${statusState.data.latestRun.type} (${statusState.data.latestRun.success ? "success" : "failed"})` : "none"}</p>
+          </div>
+
+          {statusState.error && (
+            <div className={shared.alert} role="alert">
+              {statusState.error}
+              <div className={shared.actionRow}>
+                <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryStatus}>Retry Source Reliability</button>
+              </div>
+            </div>
+          )}
+
+          <div className={styles.qualitySummary}>
+            <p className={styles.qualityCallout}>
+              Official connectors in view: <span className={shared.mono}>{officialSources}</span>. Sources with live success markers: <span className={shared.mono}>{healthySources}</span>.
+            </p>
+          </div>
+
+          <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
+            <table className={shared.table}>
+              <caption className="sr-only">Source reliability by lab</caption>
+              <thead className={shared.tableHead}>
+                <tr>
+                  <th scope="col">Lab</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">Tier</th>
+                  <th scope="col">Events</th>
+                  <th scope="col">Last Success</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sourceRows.length === 0 ? (
+                  <tr>
+                    <td colSpan={5}><p className={shared.empty}>No source reliability rows yet. Run sync and retry this panel.</p></td>
+                  </tr>
+                ) : (
+                  sourceRows.map((source) => (
+                    <tr key={source.id}>
+                      <th scope="row">{source.lab.name}</th>
+                      <td>{source.sourceName}</td>
+                      <td><span className={`badge ${source.sourceTier === "official" ? "badge-official" : "badge-fallback"}`}>{source.sourceTier}</span></td>
+                      <td className={shared.mono}>{source.eventCount}</td>
+                      <td className={shared.mono}>{formatDateTime(source.lastSuccessAt)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="diag-events" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
+          <div className={shared.panelHeader}>
+            <div>
+              <h2 className={shared.title}>Raw event feed</h2>
+              <p className={shared.subtitle}>Source links, confidence metadata, and timestamps for evidence-level inspection before action.</p>
             </div>
           </div>
-        )}
 
-        <div className={styles.qualityKpis}>
-          <article className={styles.qualityTile}>
-            <p className={styles.qualityLabel}>Healthy Sources</p>
-            <p className={styles.qualityValue}>{healthySources}/{sourceRows.length || 0}</p>
-            <p className={styles.qualityNote}>Sources with latest successful run</p>
-          </article>
-          <article className={styles.qualityTile}>
-            <p className={styles.qualityLabel}>Failing Sources</p>
-            <p className={styles.qualityValue}>{failingSources}</p>
-            <p className={styles.qualityNote}>Sources with recent failure marker</p>
-          </article>
-          <article className={styles.qualityTile}>
-            <p className={styles.qualityLabel}>Official Coverage</p>
-            <p className={styles.qualityValue}>{officialSources}</p>
-            <p className={styles.qualityNote}>Official-tier connectors in current source map</p>
-          </article>
-        </div>
+          <p className={styles.feedHint}>Use this feed to audit calibration and provenance before leaning on any model-generated trade recommendation.</p>
 
-        <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
-          <table className={shared.table}>
-            <caption className="sr-only">Source reliability by lab</caption>
-            <thead className={shared.tableHead}>
-              <tr>
-                <th scope="col">Lab</th>
-                <th scope="col">Source</th>
-                <th scope="col">Tier</th>
-                <th scope="col">Events</th>
-                <th scope="col">Last Success</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sourceRows.length === 0 ? (
-                <tr>
-                  <td colSpan={5}><p className={shared.empty}>No source reliability rows yet. Run sync and retry this panel.</p></td>
-                </tr>
-              ) : (
-                sourceRows.map((source) => (
-                  <tr key={source.id}>
-                    <th scope="row">{source.lab.name}</th>
-                    <td>{source.sourceName}</td>
-                    <td><span className={`badge ${source.sourceTier === "official" ? "badge-official" : "badge-fallback"}`}>{source.sourceTier}</span></td>
-                    <td className={shared.mono}>{source.eventCount}</td>
-                    <td className={shared.mono}>{formatDateTime(source.lastSuccessAt)}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="diag-events" className={`${shared.anchorTarget} ${shared.panel} ${shared.revealDelayed}`}>
-        <div className={shared.panelHeader}>
-          <div>
-            <h2 className={shared.title}>Raw Event Feed</h2>
-            <p className={shared.subtitle}>Outbound links, confidence metadata, and timestamps for evidence-level inspection.</p>
-          </div>
-        </div>
-
-        <p className={styles.feedHint}>Use this feed to verify confidence calibration and source provenance before acting on model outputs.</p>
-
-        {eventsState.error && (
-          <div className={shared.alert} role="alert">
-            {eventsState.error}
-            <div className={shared.actionRow}>
-              <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryEvents}>Retry Event Feed</button>
+          {eventsState.error && (
+            <div className={shared.alert} role="alert">
+              {eventsState.error}
+              <div className={shared.actionRow}>
+                <button type="button" className={`${shared.button} ${shared.buttonQuiet}`} onClick={onRetryEvents}>Retry Event Feed</button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
-          <table className={shared.table}>
-            <caption className="sr-only">Raw event feed</caption>
-            <thead className={shared.tableHead}>
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Lab</th>
-                <th scope="col">Confidence</th>
-                <th scope="col">Headline</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageItems.length === 0 ? (
+          <div className={`${shared.tableWrap} ${density === "compact" ? shared.densityCompact : shared.densityCozy}`}>
+            <table className={shared.table}>
+              <caption className="sr-only">Raw event feed</caption>
+              <thead className={shared.tableHead}>
                 <tr>
-                  <td colSpan={4}><p className={shared.empty}>No events for this scope. Expand dates or source tier to recover feed coverage.</p></td>
+                  <th scope="col">Date</th>
+                  <th scope="col">Lab</th>
+                  <th scope="col">Confidence</th>
+                  <th scope="col">Headline</th>
                 </tr>
-              ) : (
-                pageItems.map((event) => (
-                  <tr key={event.id}>
-                    <th scope="row" className={shared.mono}>{formatDate(event.publishedAt)}</th>
-                    <td>{event.lab.name}</td>
-                    <td className={shared.mono}>{event.confidence.toFixed(2)}</td>
-                    <td>
-                      <span className={`badge ${event.sourceTier === "official" ? "badge-official" : "badge-fallback"}`}>{event.sourceTier}</span>{" "}
-                      <a href={event.url} target="_blank" rel="noreferrer" className="inline-link">
-                        {event.title}
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </a>
-                    </td>
+              </thead>
+              <tbody>
+                {pageItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}><p className={shared.empty}>No events for this scope. Expand dates or source tier to recover feed coverage.</p></td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  pageItems.map((event) => (
+                    <tr key={event.id}>
+                      <th scope="row" className={shared.mono}>{formatDate(event.publishedAt)}</th>
+                      <td>{event.lab.name}</td>
+                      <td className={shared.mono}>{event.confidence.toFixed(2)}</td>
+                      <td>
+                        <span className={`badge ${event.sourceTier === "official" ? "badge-official" : "badge-fallback"}`}>{event.sourceTier}</span>{" "}
+                        <a href={event.url} target="_blank" rel="noreferrer" className="inline-link">
+                          {event.title}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-        <div className={shared.pagination}>
-          <button type="button" className={shared.pageButton} onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>Previous</button>
-          <p className={shared.pageInfo}>Page {currentPage} of {totalPages}</p>
-          <button type="button" className={shared.pageButton} onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Next</button>
-        </div>
-      </section>
+          <div className={shared.pagination}>
+            <button type="button" className={shared.pageButton} onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>Previous</button>
+            <p className={shared.pageInfo}>Page {currentPage} of {totalPages}</p>
+            <button type="button" className={shared.pageButton} onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Next</button>
+          </div>
+        </section>
+      </div>
     </>
   );
 }
